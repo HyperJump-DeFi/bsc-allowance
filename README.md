@@ -1,8 +1,16 @@
-# allowance.beefy.finance
+# allowance.hyperjump.fi
 
 ## Overview
 
-Find all the address which can spend your crypto! 
+Find all the address that can spend your crypto!
+
+## Instructions
+
+```
+$ npm i
+$ yarn global add serve
+$ serve
+```
 
 ## Dependencies
 

@@ -54,22 +54,22 @@ const providerOptions = {
 };
 
 const inject = async () => {
-  if (window.ethereum) {    
-    window.web3 = new Web3(window.ethereum);   
-    window.ethereum.enable();    
+  if (window.ethereum) {
+    window.web3 = new Web3(window.ethereum);
+    window.ethereum.enable();
     return true;
-  
-  } else {  
+
+  } else {
     try {
       web3Modal = new Web3Modal({
         cacheProvider: false,
         providerOptions,
         disableInjectedProvider: false, // optional. For MetaMask / Brave / Opera.
       });
-    
+
       provider = await web3Modal.connect();
       window.web3 = new Web3(provider);
-      
+
       return true;
     } catch (err) {
       console.error(err);
@@ -79,26 +79,8 @@ const inject = async () => {
   return false;
 }
 
-const spawnCows = () => {
-  const cows = $('.cows');
-  let n = Math.ceil(Math.random() * 3 ) + 3;
-
-  const arr = [];
-  for(let i = 0; i < n; i++) {
-    const r = 100 / n;
-    const x = (i + Math.random() * 0.5) * r;
-    const y = Math.ceil(Math.random() * 30) / 10 + 0.5;
-    const w = Math.round(Math.random() * 5) + 3;
-    const d = Math.random() < 0.5 ? -1 : 1;
-    arr.push(`<img class='cow' src='/img/beefy.svg' style='left: ${x}vw; bottom: ${y}rem; width: ${w}rem; transform: scaleX(${d}); z-index: ${Math.ceil(y)}' />`);
-  }
-  cows.html(arr.join(''));
-}
-
 function onReady() {
   (async () => {
-    spawnCows();
-    
     const injected = await inject();
     if (!injected) {
       alert("web3 object not found");
@@ -117,11 +99,11 @@ function onReady() {
         alert(e + err);
       });
     });
-    
+
     function init(account) {
       web3.eth.getChainId().then((chainId) => {
         return chainId;
-        
+
       }).then((chainId) => {
         let query = getQuery(chainId, account);
         if(query === "") {
@@ -138,29 +120,29 @@ function onReady() {
         throw err;
       });
     }
-    
+
     function getQuery(chainId, address) {
       return "https://api.bscscan.com/api?module=account&action=txlist&address=" + address;
     }
-    
+
     function getExplorerPage(chainId) {
-      return "https://bscscan.com/address/"; 
+      return "https://bscscan.com/address/";
     }
-    
+
     function getApproveTransactions(query, cb) {
       request.get(query, (err, data) => {
         if(err) { throw err; }
-      
+
         let approveTransactions = [];
         let dataObj = JSON.parse(data.text).result;
-        
+
         for(let tx of dataObj) {
-        
+
           if(tx.input.includes(approvalHash)) {
             let approveObj = {};
             approveObj.contract = web3.utils.toChecksumAddress(tx.to);
             approveObj.approved = web3.utils.toChecksumAddress("0x" + tx.input.substring(34, 74));
-            
+
             let allowance = tx.input.substring(74);
             if(allowance.includes(unlimitedAllowance)) {
               approveObj.allowance = "unlimited";
@@ -177,13 +159,13 @@ function onReady() {
                 return !(val.approved === approveObj.approved && val.contract === val.contract);
               });
             }
-            
+
           }
         }
         cb(approveTransactions);
       });
     }
-    
+
     function buildResults(chainId, txs, account) {
       let explorerURL = getExplorerPage(chainId);
       let parentElement = $('#results');
@@ -198,7 +180,7 @@ function onReady() {
         setRevokeButtonClick(txs[index], "#revoke" + index, account);
       }
     }
-    
+
     function setRevokeButtonClick(tx, id, account) {
       $(id).click(() => {
         let contract = new web3.eth.Contract(approvalABI, tx.contract);
@@ -219,7 +201,7 @@ function onReady() {
       const $btns = $('.grid-action button');
       $btns.slice(0, Math.min(10, $btns.length)).trigger('click');
     }
-    
+
     $('.revoke-10-btn').click(onRevoke10);
     $('.revoke-all-btn').click(onRevokeAll);
   })();
@@ -7814,7 +7796,6 @@ function notDeepStrictEqual(actual, expected, message) {
   }
 }
 
-
 // 9. The strict equality assertion tests strict equality, as determined by ===.
 // assert.strictEqual(actual, expected, message_opt);
 
@@ -8034,7 +8015,6 @@ exports.format = function(f) {
   return str;
 };
 
-
 // Mark that a method should not be used.
 // Returns a modified function which warns once by default.
 // If --no-deprecation is set, then it is a no-op.
@@ -8068,7 +8048,6 @@ exports.deprecate = function(fn, msg) {
   return deprecated;
 };
 
-
 var debugs = {};
 var debugEnviron;
 exports.debuglog = function(set) {
@@ -8088,7 +8067,6 @@ exports.debuglog = function(set) {
   }
   return debugs[set];
 };
-
 
 /**
  * Echos the value of a value. Trys to print the value out
@@ -8124,7 +8102,6 @@ function inspect(obj, opts) {
 }
 exports.inspect = inspect;
 
-
 // http://en.wikipedia.org/wiki/ANSI_escape_code#graphics
 inspect.colors = {
   'bold' : [1, 22],
@@ -8155,7 +8132,6 @@ inspect.styles = {
   'regexp': 'red'
 };
 
-
 function stylizeWithColor(str, styleType) {
   var style = inspect.styles[styleType];
 
@@ -8167,11 +8143,9 @@ function stylizeWithColor(str, styleType) {
   }
 }
 
-
 function stylizeNoColor(str, styleType) {
   return str;
 }
-
 
 function arrayToHash(array) {
   var hash = {};
@@ -8182,7 +8156,6 @@ function arrayToHash(array) {
 
   return hash;
 }
-
 
 function formatValue(ctx, value, recurseTimes) {
   // Provide a hook for user-specified inspect functions.
@@ -8296,7 +8269,6 @@ function formatValue(ctx, value, recurseTimes) {
   return reduceToSingleString(output, base, braces);
 }
 
-
 function formatPrimitive(ctx, value) {
   if (isUndefined(value))
     return ctx.stylize('undefined', 'undefined');
@@ -8315,11 +8287,9 @@ function formatPrimitive(ctx, value) {
     return ctx.stylize('null', 'null');
 }
 
-
 function formatError(value) {
   return '[' + Error.prototype.toString.call(value) + ']';
 }
-
 
 function formatArray(ctx, value, recurseTimes, visibleKeys, keys) {
   var output = [];
@@ -8339,7 +8309,6 @@ function formatArray(ctx, value, recurseTimes, visibleKeys, keys) {
   });
   return output;
 }
-
 
 function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
   var name, str, desc;
@@ -8399,7 +8368,6 @@ function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
   return name + ': ' + str;
 }
 
-
 function reduceToSingleString(output, base, braces) {
   var numLinesEst = 0;
   var length = output.reduce(function(prev, cur) {
@@ -8419,7 +8387,6 @@ function reduceToSingleString(output, base, braces) {
 
   return braces[0] + base + ' ' + output.join(', ') + ' ' + braces[1];
 }
-
 
 // NOTE: These type checking functions intentionally don't use `instanceof`
 // because it is fragile and can be easily faked with `Object.create()`.
@@ -8505,11 +8472,9 @@ function objectToString(o) {
   return Object.prototype.toString.call(o);
 }
 
-
 function pad(n) {
   return n < 10 ? '0' + n.toString(10) : n.toString(10);
 }
-
 
 var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
               'Oct', 'Nov', 'Dec'];
@@ -8523,12 +8488,10 @@ function timestamp() {
   return [d.getDate(), months[d.getMonth()], time].join(' ');
 }
 
-
 // log is just a thin wrapper to console.log that prepends a timestamp
 exports.log = function() {
   console.log('%s - %s', timestamp(), exports.format.apply(exports, arguments));
 };
-
 
 /**
  * Inherit the prototype methods from one constructor into another.
@@ -19579,7 +19542,6 @@ function runTimeout(fun) {
         }
     }
 
-
 }
 function runClearTimeout(marker) {
     if (cachedClearTimeout === clearTimeout) {
@@ -19604,8 +19566,6 @@ function runClearTimeout(marker) {
             return cachedClearTimeout.call(this, marker);
         }
     }
-
-
 
 }
 var queue = [];
@@ -21806,8 +21766,8 @@ module.exports = {
 
 	/**
 	* General purpose encoding function
-  * @param {string} codec 
-  * @param {string} value 
+  * @param {string} codec
+  * @param {string} value
   */
 	encode: function (codec, value) {
 		let profile = profiles[codec];
@@ -21895,28 +21855,28 @@ const encodes = {
   },
 };
 
-/** 
+/**
 * list of known decoding,
 * decoding should be a function that takes a `Buffer` input,
 * and return a `string` result
 */
 const decodes = {
   /**
-  * @param {Buffer} value 
+  * @param {Buffer} value
   */
   hexMultiHash: (value) => {
     const cid = new CID(value);
     return multiH.decode(cid.multihash).digest.toString('hex');
   },
   /**
-  * @param {Buffer} value 
+  * @param {Buffer} value
   */
   b58MultiHash: (value) => {
     const cid = new CID(value);
     return multiH.toB58String(cid.multihash);
   },
   /**
-  * @param {Buffer} value 
+  * @param {Buffer} value
   */
   utf8: (value) => {
     return value.toString('utf8');
@@ -27616,7 +27576,6 @@ function intFromLE(bytes) {
 }
 utils.intFromLE = intFromLE;
 
-
 },{"bn.js":68,"minimalistic-assert":247,"minimalistic-crypto-utils":248}],152:[function(require,module,exports){
 module.exports={
   "_from": "elliptic@^6.4.0",
@@ -28317,7 +28276,7 @@ module.exports = {
 // modifications and pruning. It is licensed under MIT:
 //
 // Copyright 2015-2016 Chen, Yi-Cyuan
-//  
+//
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
 // "Software"), to deal in the Software without restriction, including
@@ -28325,10 +28284,10 @@ module.exports = {
 // distribute, sublicense, and/or sell copies of the Software, and to
 // permit persons to whom the Software is furnished to do so, subject to
 // the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be
 // included in all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -37589,7 +37548,6 @@ module.exports = function forEach (obj, fn, ctx) {
     }
 };
 
-
 },{}],208:[function(require,module,exports){
 'use strict';
 
@@ -38249,7 +38207,6 @@ SHA224.prototype._digest = function digest(enc) {
   else
     return utils.split32(this.h.slice(0, 7), 'big');
 };
-
 
 },{"../utils":225,"./256":221}],221:[function(require,module,exports){
 'use strict';
@@ -44352,7 +44309,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 },{}],273:[function(require,module,exports){
 /*!
  * v2.1.4-104-gc868b3a
- * 
+ *
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -44447,7 +44404,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return always; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return functor; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lists__ = __webpack_require__(1);
-
 
 /**
  * Partially complete a function.
@@ -44684,9 +44640,6 @@ function functor (val) {
   }
 }
 
-
-
-
 /***/ }),
 /* 1 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -44708,7 +44661,6 @@ function functor (val) {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "k", function() { return reverseList; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return first; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__functional__ = __webpack_require__(0);
-
 
 /**
  * Like cons in Lisp
@@ -44884,9 +44836,6 @@ function first (test, list) {
       : first(test, tail(list)))
 }
 
-
-
-
 /***/ }),
 /* 2 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -44899,8 +44848,6 @@ function first (test, list) {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return hasAllProperties; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lists__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__functional__ = __webpack_require__(0);
-
-
 
 /**
  * This file defines some loosely associated syntactic sugar for
@@ -44943,9 +44890,6 @@ function hasAllProperties (fieldList, o) {
       return (field in o)
     }, fieldList)
 }
-
-
-
 
 /***/ }),
 /* 3 */
@@ -45013,9 +44957,6 @@ function errorReport (statusCode, body, error) {
   }
 }
 
-
-
-
 /***/ }),
 /* 4 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -45025,7 +44966,6 @@ function errorReport (statusCode, body, error) {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return keyOf; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return nodeOf; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__functional__ = __webpack_require__(0);
-
 
 /**
  * Get a new key->node mapping
@@ -45043,9 +44983,6 @@ var keyOf = Object(__WEBPACK_IMPORTED_MODULE_0__functional__["c" /* attr */])('k
 /** get the node from a namedNode */
 var nodeOf = Object(__WEBPACK_IMPORTED_MODULE_0__functional__["c" /* attr */])('node')
 
-
-
-
 /***/ }),
 /* 5 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -45057,11 +44994,6 @@ var nodeOf = Object(__WEBPACK_IMPORTED_MODULE_0__functional__["c" /* attr */])('
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__util__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__defaults__ = __webpack_require__(8);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__wire__ = __webpack_require__(9);
-
-
-
-
-
 
 // export public API
 function oboe (arg1) {
@@ -45115,9 +45047,6 @@ oboe.drop = function () {
   return oboe.drop
 }
 
-
-
-
 /***/ }),
 /* 6 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -45129,10 +45058,6 @@ oboe.drop = function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__ascent__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__util__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__lists__ = __webpack_require__(1);
-
-
-
-
 
 /**
  * This file provides various listeners which can be used to build up
@@ -45269,9 +45194,6 @@ function incrementalContentBuilder (oboeBus) {
   return contentBuilderHandlers
 }
 
-
-
-
 /***/ }),
 /* 7 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -45280,9 +45202,7 @@ function incrementalContentBuilder (oboeBus) {
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__publicApi__ = __webpack_require__(5);
 
-
 /* harmony default export */ __webpack_exports__["default"] = (__WEBPACK_IMPORTED_MODULE_0__publicApi__["a" /* oboe */]);
-
 
 /***/ }),
 /* 8 */
@@ -45291,7 +45211,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return applyDefaults; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__util__ = __webpack_require__(2);
-
 
 function applyDefaults (passthrough, url, httpMethodName, body, headers, withCredentials, cached) {
   headers = headers
@@ -45332,9 +45251,6 @@ function applyDefaults (passthrough, url, httpMethodName, body, headers, withCre
   return passthrough(httpMethodName || 'GET', modifiedUrl(url, cached), body, headers, withCredentials || false)
 }
 
-
-
-
 /***/ }),
 /* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -45349,15 +45265,6 @@ function applyDefaults (passthrough, url, httpMethodName, body, headers, withCre
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__instanceApi__ = __webpack_require__(16);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__libs_clarinet__ = __webpack_require__(17);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__streamingHttp_node__ = __webpack_require__(18);
-
-
-
-
-
-
-
-
-
 
 /**
  * This file sits just behind the API which is used to attain a new
@@ -45392,9 +45299,6 @@ function wire (httpMethodName, contentSource, body, headers, withCredentials) {
   return Object(__WEBPACK_IMPORTED_MODULE_5__instanceApi__["a" /* instanceApi */])(oboeBus, contentSource)
 }
 
-
-
-
 /***/ }),
 /* 10 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -45403,8 +45307,6 @@ function wire (httpMethodName, contentSource, body, headers, withCredentials) {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return pubSub; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__singleEventPubSub__ = __webpack_require__(11);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__functional__ = __webpack_require__(0);
-
-
 
 /**
  * pubSub is a curried interface for listening to and emitting
@@ -45469,9 +45371,6 @@ function pubSub () {
   return pubSubInstance
 }
 
-
-
-
 /***/ }),
 /* 11 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -45481,9 +45380,6 @@ function pubSub () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lists__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__util__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__functional__ = __webpack_require__(0);
-
-
-
 
 /**
  * A pub/sub which is responsible for a single event type. A
@@ -45576,9 +45472,6 @@ function singleEventPubSub (eventType, newListener, removeListener) {
   }
 }
 
-
-
-
 /***/ }),
 /* 12 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -45588,8 +45481,6 @@ function singleEventPubSub (eventType, newListener, removeListener) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ascent__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__events__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__lists__ = __webpack_require__(1);
-
-
 
 /**
  * A bridge used to assign stateless functions to listen to clarinet.
@@ -45649,9 +45540,6 @@ function ascentManager (oboeBus, handlers) {
   })
 }
 
-
-
-
 /***/ }),
 /* 13 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -45661,9 +45549,6 @@ function ascentManager (oboeBus, handlers) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__events__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__lists__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ascent__ = __webpack_require__(4);
-
-
-
 
 /**
  *  The pattern adaptor listens for newListener and removeListener
@@ -45768,9 +45653,6 @@ function patternAdapter (oboeBus, jsonPathCompiler) {
   })
 }
 
-
-
-
 /***/ }),
 /* 14 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -45783,12 +45665,6 @@ function patternAdapter (oboeBus, jsonPathCompiler) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__util__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__incrementalContentBuilder__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__jsonPathSyntax__ = __webpack_require__(15);
-
-
-
-
-
-
 
 /**
  * The jsonPath evaluator compiler used for Oboe.js.
@@ -46129,9 +46005,6 @@ var jsonPathCompiler = Object(__WEBPACK_IMPORTED_MODULE_5__jsonPathSyntax__["a" 
   }
 })
 
-
-
-
 /***/ }),
 /* 15 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -46139,7 +46012,6 @@ var jsonPathCompiler = Object(__WEBPACK_IMPORTED_MODULE_5__jsonPathSyntax__["a" 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return jsonPathSyntax; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__functional__ = __webpack_require__(0);
-
 
 var jsonPathSyntax = (function () {
   /**
@@ -46248,9 +46120,6 @@ var jsonPathSyntax = (function () {
   }
 }())
 
-
-
-
 /***/ }),
 /* 16 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -46261,10 +46130,6 @@ var jsonPathSyntax = (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__functional__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__util__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__publicApi__ = __webpack_require__(5);
-
-
-
-
 
 /**
  * The instance API is the thing that is returned when oboe() is called.
@@ -46502,9 +46367,6 @@ function instanceApi (oboeBus, contentSource) {
   return oboeApi
 }
 
-
-
-
 /***/ }),
 /* 17 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -46512,7 +46374,6 @@ function instanceApi (oboeBus, contentSource) {
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return clarinet; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__events__ = __webpack_require__(3);
-
 
 /*
    This is a slightly hacked-up browser only version of clarinet
@@ -46982,9 +46843,6 @@ function clarinet (eventBus) {
   }
 }
 
-
-
-
 /***/ }),
 /* 18 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -46997,11 +46855,6 @@ function clarinet (eventBus) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__util__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__parseResponseHeaders_browser__ = __webpack_require__(20);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__functional__ = __webpack_require__(0);
-
-
-
-
-
 
 function httpTransport () {
   return new XMLHttpRequest()
@@ -47144,9 +46997,6 @@ function streamingHttp (oboeBus, xhr, method, url, data, headers, withCredential
   }
 }
 
-
-
-
 /***/ }),
 /* 19 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -47219,9 +47069,6 @@ function parseUrlOrigin (url) {
   }
 }
 
-
-
-
 /***/ }),
 /* 20 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -47251,9 +47098,6 @@ function parseResponseHeaders (headerStr) {
 
   return headers
 }
-
-
-
 
 /***/ })
 /******/ ])["default"];
@@ -48845,7 +48689,6 @@ function createErrorType(code, message, Base) {
   codes[code] = NodeError;
 } // https://github.com/nodejs/node/blob/v10.8.0/lib/internal/errors.js
 
-
 function oneOf(expected, thing) {
   if (Array.isArray(expected)) {
     var len = expected.length;
@@ -48865,11 +48708,9 @@ function oneOf(expected, thing) {
   }
 } // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/startsWith
 
-
 function startsWith(str, search, pos) {
   return str.substr(!pos || pos < 0 ? 0 : +pos, search.length) === search;
 } // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/endsWith
-
 
 function endsWith(str, search, this_len) {
   if (this_len === undefined || this_len > str.length) {
@@ -48878,7 +48719,6 @@ function endsWith(str, search, this_len) {
 
   return str.substring(this_len - search.length, this_len) === search;
 } // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/includes
-
 
 function includes(str, search, start) {
   if (typeof start !== 'number') {
@@ -48977,7 +48817,6 @@ var objectKeys = Object.keys || function (obj) {
 };
 /*</replacement>*/
 
-
 module.exports = Duplex;
 
 var Readable = require('./_stream_readable');
@@ -49073,7 +48912,6 @@ Object.defineProperty(Duplex.prototype, 'destroyed', {
     } // backward compatibility, the user is explicitly
     // managing destroyed
 
-
     this._readableState.destroyed = value;
     this._writableState.destroyed = value;
   }
@@ -49161,10 +48999,8 @@ var EElistenerCount = function EElistenerCount(emitter, type) {
 
 /*<replacement>*/
 
-
 var Stream = require('./internal/streams/stream');
 /*</replacement>*/
-
 
 var Buffer = require('buffer').Buffer;
 
@@ -49179,7 +49015,6 @@ function _isUint8Array(obj) {
 }
 /*<replacement>*/
 
-
 var debugUtil = require('util');
 
 var debug;
@@ -49190,7 +49025,6 @@ if (debugUtil && debugUtil.debuglog) {
   debug = function debug() {};
 }
 /*</replacement>*/
-
 
 var BufferList = require('./internal/streams/buffer_list');
 
@@ -49204,7 +49038,6 @@ var _require$codes = require('../errors').codes,
     ERR_STREAM_PUSH_AFTER_EOF = _require$codes.ERR_STREAM_PUSH_AFTER_EOF,
     ERR_METHOD_NOT_IMPLEMENTED = _require$codes.ERR_METHOD_NOT_IMPLEMENTED,
     ERR_STREAM_UNSHIFT_AFTER_END_EVENT = _require$codes.ERR_STREAM_UNSHIFT_AFTER_END_EVENT; // Lazy loaded to improve the startup performance.
-
 
 var StringDecoder;
 var createReadableStreamAsyncIterator;
@@ -49327,7 +49160,6 @@ Object.defineProperty(Readable.prototype, 'destroyed', {
     } // backward compatibility, the user is explicitly
     // managing destroyed
 
-
     this._readableState.destroyed = value;
   }
 });
@@ -49340,7 +49172,6 @@ Readable.prototype._destroy = function (err, cb) {
 // This returns true if the highWaterMark has not been hit yet,
 // similar to how Writable.write() returns true if you should
 // write() some more.
-
 
 Readable.prototype.push = function (chunk, encoding) {
   var state = this._readableState;
@@ -49363,7 +49194,6 @@ Readable.prototype.push = function (chunk, encoding) {
 
   return readableAddChunk(this, chunk, encoding, false, skipChunkCheck);
 }; // Unshift should *always* be something directly out of read()
-
 
 Readable.prototype.unshift = function (chunk) {
   return readableAddChunk(this, chunk, null, true, false);
@@ -49411,7 +49241,6 @@ function readableAddChunk(stream, chunk, encoding, addToFront, skipChunkCheck) {
   // Also, if we have no data yet, we can stand some more bytes.
   // This is to work around cases where hwm=0, such as the repl.
 
-
   return !state.ended && (state.length < state.highWaterMark || state.length === 0);
 }
 
@@ -49443,7 +49272,6 @@ Readable.prototype.isPaused = function () {
   return this._readableState.flowing === false;
 }; // backwards compatibility.
 
-
 Readable.prototype.setEncoding = function (enc) {
   if (!StringDecoder) StringDecoder = require('string_decoder/').StringDecoder;
   var decoder = new StringDecoder(enc);
@@ -49465,7 +49293,6 @@ Readable.prototype.setEncoding = function (enc) {
   this._readableState.length = content.length;
   return this;
 }; // Don't raise the hwm > 1GB
-
 
 var MAX_HWM = 0x40000000;
 
@@ -49489,7 +49316,6 @@ function computeNewHighWaterMark(n) {
 } // This function is designed to be inlinable, so please take care when making
 // changes to the function body.
 
-
 function howMuchToRead(n, state) {
   if (n <= 0 || state.length === 0 && state.ended) return 0;
   if (state.objectMode) return 1;
@@ -49498,7 +49324,6 @@ function howMuchToRead(n, state) {
     // Only flow one buffer at a time
     if (state.flowing && state.length) return state.buffer.head.data.length;else return state.length;
   } // If we're asking for more than the current hwm, then raise the hwm.
-
 
   if (n > state.highWaterMark) state.highWaterMark = computeNewHighWaterMark(n);
   if (n <= state.length) return n; // Don't have enough
@@ -49510,7 +49335,6 @@ function howMuchToRead(n, state) {
 
   return state.length;
 } // you can override either this method, or the async _read(n) below.
-
 
 Readable.prototype.read = function (n) {
   debug('read', n);
@@ -49555,7 +49379,6 @@ Readable.prototype.read = function (n) {
   // 3. Actually pull the requested chunks out of the buffer and return.
   // if we need a readable event, then we need to do some reading.
 
-
   var doRead = state.needReadable;
   debug('need readable', doRead); // if we currently have less than the highWaterMark, then also read some
 
@@ -49564,7 +49387,6 @@ Readable.prototype.read = function (n) {
     debug('length less than watermark', doRead);
   } // however, if we've ended, then there's no point, and if we're already
   // reading, then it's unnecessary.
-
 
   if (state.ended || state.reading) {
     doRead = false;
@@ -49640,7 +49462,6 @@ function onEofChunk(stream, state) {
 // another read() call => stack overflow.  This way, it might trigger
 // a nextTick recursion warning, but that's not so bad.
 
-
 function emitReadable(stream) {
   var state = stream._readableState;
   debug('emitReadable', state.needReadable, state.emittedReadable);
@@ -49667,7 +49488,6 @@ function emitReadable_(stream) {
   // 3. It is below the highWaterMark, so we can schedule
   //    another readable later.
 
-
   state.needReadable = !state.flowing && !state.ended && state.length <= state.highWaterMark;
   flow(stream);
 } // at this point, the user has presumably seen the 'readable' event,
@@ -49676,7 +49496,6 @@ function emitReadable_(stream) {
 // it's in progress.
 // However, if we're not ended, or reading, and the length < hwm,
 // then go ahead and try to read some more preemptively.
-
 
 function maybeReadMore(stream, state) {
   if (!state.readingMore) {
@@ -49722,7 +49541,6 @@ function maybeReadMore_(stream, state) {
 // call cb(er, data) where data is <= n in length.
 // for virtual (non-string, non-buffer) streams, "length" is somewhat
 // arbitrary, and perhaps not very meaningful.
-
 
 Readable.prototype._read = function (n) {
   errorOrDestroy(this, new ERR_METHOD_NOT_IMPLEMENTED('_read()'));
@@ -49772,7 +49590,6 @@ Readable.prototype.pipe = function (dest, pipeOpts) {
   // handler in flow(), but adding and removing repeatedly is
   // too slow.
 
-
   var ondrain = pipeOnDrain(src);
   dest.on('drain', ondrain);
   var cleanedUp = false;
@@ -49819,14 +49636,12 @@ Readable.prototype.pipe = function (dest, pipeOpts) {
   } // if the dest has an error, then stop piping into it.
   // however, don't suppress the throwing behavior for this.
 
-
   function onerror(er) {
     debug('onerror', er);
     unpipe();
     dest.removeListener('error', onerror);
     if (EElistenerCount(dest, 'error') === 0) errorOrDestroy(dest, er);
   } // Make sure our error handler is attached before userland ones.
-
 
   prependListener(dest, 'error', onerror); // Both close and finish should trigger unpipe, but only once.
 
@@ -49849,7 +49664,6 @@ Readable.prototype.pipe = function (dest, pipeOpts) {
     debug('unpipe');
     src.unpipe(dest);
   } // tell the dest that it's being piped to
-
 
   dest.emit('pipe', src); // start the flow if it hasn't been started already.
 
@@ -49894,7 +49708,6 @@ Readable.prototype.unpipe = function (dest) {
     return this;
   } // slow case. multiple pipe destinations.
 
-
   if (!dest) {
     // remove all.
     var dests = state.pipes;
@@ -49912,7 +49725,6 @@ Readable.prototype.unpipe = function (dest) {
     return this;
   } // try to find the right one.
 
-
   var index = indexOf(state.pipes, dest);
   if (index === -1) return this;
   state.pipes.splice(index, 1);
@@ -49922,7 +49734,6 @@ Readable.prototype.unpipe = function (dest) {
   return this;
 }; // set up data events if they are asked for
 // Ensure readable listeners eventually get something
-
 
 Readable.prototype.on = function (ev, fn) {
   var res = Stream.prototype.on.call(this, ev, fn);
@@ -50005,7 +49816,6 @@ function nReadingNextTick(self) {
 } // pause() and resume() are remnants of the legacy readable stream API
 // If the user uses them, then switch into old mode.
 
-
 Readable.prototype.resume = function () {
   var state = this._readableState;
 
@@ -50066,7 +49876,6 @@ function flow(stream) {
 // This is *not* part of the readable stream interface.
 // It is an ugly unfortunate mess of history.
 
-
 Readable.prototype.wrap = function (stream) {
   var _this = this;
 
@@ -50107,12 +49916,10 @@ Readable.prototype.wrap = function (stream) {
     }
   } // proxy certain important events.
 
-
   for (var n = 0; n < kProxyEvents.length; n++) {
     stream.on(kProxyEvents[n], this.emit.bind(this, kProxyEvents[n]));
   } // when we try to consume some more bytes, simply unpause the
   // underlying stream.
-
 
   this._read = function (n) {
     debug('wrapped _read', n);
@@ -50367,7 +50174,6 @@ function Transform(options) {
     if (typeof options.flush === 'function') this._flush = options.flush;
   } // When the writable side finishes, then flush out anything remaining.
 
-
   this.on('prefinish', prefinish);
 }
 
@@ -50397,7 +50203,6 @@ Transform.prototype.push = function (chunk, encoding) {
 // an error, then that'll put the hurt on the whole operation.  If you
 // never call cb(), then you'll never get another chunk.
 
-
 Transform.prototype._transform = function (chunk, encoding, cb) {
   cb(new ERR_METHOD_NOT_IMPLEMENTED('_transform()'));
 };
@@ -50415,7 +50220,6 @@ Transform.prototype._write = function (chunk, encoding, cb) {
 }; // Doesn't matter what the args are here.
 // _transform does all the work.
 // That we got here means that the readable side wants more data.
-
 
 Transform.prototype._read = function (n) {
   var ts = this._transformState;
@@ -50486,7 +50290,6 @@ function WriteReq(chunk, encoding, cb) {
 } // It seems a linked list but it is not
 // there will be only 2 of these for each stream
 
-
 function CorkedRequest(state) {
   var _this = this;
 
@@ -50500,7 +50303,6 @@ function CorkedRequest(state) {
 /* </replacement> */
 
 /*<replacement>*/
-
 
 var Duplex;
 /*</replacement>*/
@@ -50517,7 +50319,6 @@ var internalUtil = {
 
 var Stream = require('./internal/streams/stream');
 /*</replacement>*/
-
 
 var Buffer = require('buffer').Buffer;
 
@@ -50612,7 +50413,6 @@ function WritableState(options, stream, isDuplex) {
     onwrite(stream, er);
   }; // the callback that the user supplies to write(chunk,encoding,cb)
 
-
   this.writecb = null; // the amount that is being written when _write is called.
 
   this.writelen = 0;
@@ -50660,7 +50460,6 @@ WritableState.prototype.getBuffer = function getBuffer() {
 })(); // Test _writableState for inheritance to account for Duplex streams,
 // whose prototype chain only points to Readable.
 
-
 var realHasInstance;
 
 if (typeof Symbol === 'function' && Symbol.hasInstance && typeof Function.prototype[Symbol.hasInstance] === 'function') {
@@ -50704,7 +50503,6 @@ function Writable(options) {
   Stream.call(this);
 } // Otherwise people can pipe Writable streams, which is just wrong.
 
-
 Writable.prototype.pipe = function () {
   errorOrDestroy(this, new ERR_STREAM_CANNOT_PIPE());
 };
@@ -50717,7 +50515,6 @@ function writeAfterEnd(stream, cb) {
 } // Checks that a user-supplied chunk is valid, especially for the particular
 // mode the stream is in. Currently this means that `null` is never accepted
 // and undefined/non-string values are only allowed in object mode.
-
 
 function validChunk(stream, state, chunk, cb) {
   var er;
@@ -50924,14 +50721,12 @@ function afterWrite(stream, state, finished, cb) {
 // emit 'drain' before the write() consumer gets the 'false' return
 // value, and has a chance to attach a 'drain' listener.
 
-
 function onwriteDrain(stream, state) {
   if (state.length === 0 && state.needDrain) {
     state.needDrain = false;
     stream.emit('drain');
   }
 } // if there's something in the buffer waiting, then process it
-
 
 function clearBuffer(stream, state) {
   state.bufferProcessing = true;
@@ -51018,7 +50813,6 @@ Writable.prototype.end = function (chunk, encoding, cb) {
     state.corked = 1;
     this.uncork();
   } // ignore unnecessary end() calls.
-
 
   if (!state.ending) endWritable(this, state, cb);
   return this;
@@ -51113,7 +50907,6 @@ function onCorkedFinish(corkReq, state, err) {
     entry = entry.next;
   } // reuse the free corkReq.
 
-
   state.corkedRequestsFree.next = corkReq;
 }
 
@@ -51136,7 +50929,6 @@ Object.defineProperty(Writable.prototype, 'destroyed', {
       return;
     } // backward compatibility, the user is explicitly
     // managing destroyed
-
 
     this._writableState.destroyed = value;
   }
@@ -51248,7 +51040,6 @@ var ReadableStreamAsyncIteratorPrototype = Object.setPrototypeOf((_Object$setPro
     // we will wait for the previous Promise to finish
     // this logic is optimized to support for await loops,
     // where next() is only called once at a time
-
 
     var lastPromise = this[kLastPromise];
     var promise;
@@ -51595,11 +51386,9 @@ function destroy(err, cb) {
   } // we set destroyed to true before firing error callbacks in order
   // to make it re-entrance safe in case destroy() is called within callbacks
 
-
   if (this._readableState) {
     this._readableState.destroyed = true;
   } // if this is a duplex stream mark the writable part as destroyed as well
-
 
   if (this._writableState) {
     this._writableState.destroyed = true;
@@ -51905,7 +51694,6 @@ function getHighWaterMark(state, options, duplexKey, isDuplex) {
 
     return Math.floor(hwm);
   } // Default value
-
 
   return state.objectMode ? 16 : 16 * 1024;
 }
@@ -54578,8 +54366,6 @@ Stream.pipeline = require('readable-stream/lib/internal/streams/pipeline.js')
 // Backwards-compat with node 0.4.x
 Stream.Stream = Stream;
 
-
-
 // old-style streams.  Note that the pipe method (the only relevant
 // part of this class) is overridden in the Readable class.
 
@@ -54622,7 +54408,6 @@ Stream.prototype.pipe = function(dest, options) {
 
     dest.end();
   }
-
 
   function onclose() {
     if (didOnEnd) return;
@@ -55177,7 +54962,7 @@ var IncomingMessage = exports.IncomingMessage = function (xhr, response, mode, f
 		self.url = response.url
 		self.statusCode = response.status
 		self.statusMessage = response.statusText
-		
+
 		response.headers.forEach(function (header, key){
 			self.headers[key.toLowerCase()] = header
 			self.rawHeaders.push(key, header)
@@ -55751,19 +55536,16 @@ var Agent = require('./agent-base');
  * Noop.
  */
 
-
 function noop() {}
 /**
  * Expose `request`.
  */
-
 
 module.exports = function (method, url) {
   // callback
   if (typeof url === 'function') {
     return new exports.Request('GET', method).end(url);
   } // url first
-
 
   if (arguments.length === 1) {
     return new exports.Request('GET', method);
@@ -55810,7 +55592,6 @@ request.getXHR = function () {
  * @api private
  */
 
-
 var trim = ''.trim ? function (s) {
   return s.trim();
 } : function (s) {
@@ -55843,7 +55624,6 @@ function serialize(obj) {
  * @param {Mixed} val
  */
 
-
 function pushEncodedKeyValuePair(pairs, key, val) {
   if (val === undefined) return;
 
@@ -55867,7 +55647,6 @@ function pushEncodedKeyValuePair(pairs, key, val) {
 /**
  * Expose serialization method.
  */
-
 
 request.serializeObject = serialize;
 /**
@@ -55900,7 +55679,6 @@ function parseString(str) {
 /**
  * Expose parser.
  */
-
 
 request.parseString = parseString;
 /**
@@ -55985,7 +55763,6 @@ function parseHeader(str) {
  * @api private
  */
 
-
 function isJSON(mime) {
   // should match /json or +json
   // but not /json-seq
@@ -56037,7 +55814,6 @@ function isJSON(mime) {
  * @api private
  */
 
-
 function Response(req) {
   this.req = req;
   this.xhr = this.req.xhr; // responseText is accessible only if responseType is '' or 'text' and on older browsers
@@ -56067,7 +55843,6 @@ function Response(req) {
     this.body = this.req.method === 'HEAD' ? null : this._parseBody(this.text ? this.text : this.xhr.response);
   }
 } // eslint-disable-next-line new-cap
-
 
 ResponseBase(Response.prototype);
 /**
@@ -56101,7 +55876,6 @@ Response.prototype._parseBody = function (str) {
  * @api public
  */
 
-
 Response.prototype.toError = function () {
   var req = this.req;
   var method = req.method;
@@ -56116,7 +55890,6 @@ Response.prototype.toError = function () {
 /**
  * Expose `Response`.
  */
-
 
 request.Response = Response;
 /**
@@ -56172,7 +55945,6 @@ function Request(method, url) {
       new_err = err_; // ok() callback can throw
     } // #1000 don't catch errors from the callback to avoid double calling it
 
-
     if (new_err) {
       new_err.original = err;
       new_err.response = res;
@@ -56187,7 +55959,6 @@ function Request(method, url) {
  * Mixin `Emitter` and `RequestBase`.
  */
 // eslint-disable-next-line new-cap
-
 
 Emitter(Request.prototype); // eslint-disable-next-line new-cap
 
@@ -56238,7 +56009,6 @@ Request.prototype.type = function (type) {
  * @api public
  */
 
-
 Request.prototype.accept = function (type) {
   this.set('Accept', request.types[type] || type);
   return this;
@@ -56252,7 +56022,6 @@ Request.prototype.accept = function (type) {
  * @return {Request} for chaining
  * @api public
  */
-
 
 Request.prototype.auth = function (user, pass, options) {
   if (arguments.length === 1) pass = '';
@@ -56293,7 +56062,6 @@ Request.prototype.auth = function (user, pass, options) {
  * @api public
  */
 
-
 Request.prototype.query = function (val) {
   if (typeof val !== 'string') val = serialize(val);
   if (val) this._query.push(val);
@@ -56315,7 +56083,6 @@ Request.prototype.query = function (val) {
  * @return {Request} for chaining
  * @api public
  */
-
 
 Request.prototype.attach = function (field, file, options) {
   if (file) {
@@ -56345,7 +56112,6 @@ Request.prototype._getFormData = function () {
  * @api private
  */
 
-
 Request.prototype.callback = function (err, res) {
   if (this._shouldRetry(err, res)) {
     return this._retry();
@@ -56367,7 +56133,6 @@ Request.prototype.callback = function (err, res) {
  * @api private
  */
 
-
 Request.prototype.crossDomainError = function () {
   var err = new Error('Request has been terminated\nPossible causes: the network is offline, Origin is not allowed by Access-Control-Allow-Origin, the page is being unloaded, etc.');
   err.crossDomain = true;
@@ -56376,7 +56141,6 @@ Request.prototype.crossDomainError = function () {
   err.url = this.url;
   this.callback(err);
 }; // This only warns, because the request is still likely to work
-
 
 Request.prototype.agent = function () {
   console.warn('This is not supported in browser version of superagent');
@@ -56413,7 +56177,6 @@ Request.prototype._isHost = function (obj) {
  * @api public
  */
 
-
 Request.prototype.end = function (fn) {
   if (this._endCalled) {
     console.warn('Warning: .end() was called twice. This is not supported in superagent');
@@ -56438,7 +56201,6 @@ Request.prototype._setUploadTimeout = function () {
   }
 }; // eslint-disable-next-line complexity
 
-
 Request.prototype._end = function () {
   if (this._aborted) return this.callback(new Error('The request has been aborted even before .end() was called'));
   var self = this;
@@ -56447,7 +56209,6 @@ Request.prototype._end = function () {
   var data = this._formData || this._data;
 
   this._setTimeouts(); // state change
-
 
   xhr.onreadystatechange = function () {
     var readyState = xhr.readyState;
@@ -56460,7 +56221,6 @@ Request.prototype._end = function () {
       return;
     } // In IE9, reads to any property (e.g. status) off of an aborted XHR will
     // result in the error "Could not complete the operation due to error c00c023f"
-
 
     var status;
 
@@ -56477,7 +56237,6 @@ Request.prototype._end = function () {
 
     self.emit('end');
   }; // progress
-
 
   var handleProgress = function handleProgress(direction, e) {
     if (e.total > 0) {
@@ -56509,7 +56268,6 @@ Request.prototype._end = function () {
     this._setUploadTimeout();
   } // initiate request
 
-
   try {
     if (this.username && this.password) {
       xhr.open(this.method, this.url, true, this.username, this.password);
@@ -56520,7 +56278,6 @@ Request.prototype._end = function () {
     // see #1149
     return this.callback(err);
   } // CORS
-
 
   if (this._withCredentials) xhr.withCredentials = true; // body
 
@@ -56537,7 +56294,6 @@ Request.prototype._end = function () {
     if (_serialize) data = _serialize(data);
   } // set header fields
 
-
   for (var field in this.header) {
     if (this.header[field] === null) continue;
     if (Object.prototype.hasOwnProperty.call(this.header, field)) xhr.setRequestHeader(field, this.header[field]);
@@ -56546,7 +56302,6 @@ Request.prototype._end = function () {
   if (this._responseType) {
     xhr.responseType = this._responseType;
   } // send stuff
-
 
   this.emit('request', this); // IE11 xhr.send(undefined) sends 'undefined' string as POST payload (instead of nothing)
   // We need null here if data is undefined
@@ -56604,7 +56359,6 @@ request.get = function (url, data, fn) {
  * @api public
  */
 
-
 request.head = function (url, data, fn) {
   var req = request('HEAD', url);
 
@@ -56627,7 +56381,6 @@ request.head = function (url, data, fn) {
  * @api public
  */
 
-
 request.options = function (url, data, fn) {
   var req = request('OPTIONS', url);
 
@@ -56649,7 +56402,6 @@ request.options = function (url, data, fn) {
  * @return {Request}
  * @api public
  */
-
 
 function del(url, data, fn) {
   var req = request('DELETE', url);
@@ -56698,7 +56450,6 @@ request.patch = function (url, data, fn) {
  * @api public
  */
 
-
 request.post = function (url, data, fn) {
   var req = request('POST', url);
 
@@ -56720,7 +56471,6 @@ request.post = function (url, data, fn) {
  * @return {Request}
  * @api public
  */
-
 
 request.put = function (url, data, fn) {
   var req = request('PUT', url);
@@ -56766,7 +56516,6 @@ var isObject = require('./is-object');
  * Expose `RequestBase`.
  */
 
-
 module.exports = RequestBase;
 /**
  * Initialize a new `RequestBase`.
@@ -56785,7 +56534,6 @@ function RequestBase(obj) {
  * @api private
  */
 
-
 function mixin(obj) {
   for (var key in RequestBase.prototype) {
     if (Object.prototype.hasOwnProperty.call(RequestBase.prototype, key)) obj[key] = RequestBase.prototype[key];
@@ -56799,7 +56547,6 @@ function mixin(obj) {
  * @return {Request} for chaining
  * @api public
  */
-
 
 RequestBase.prototype.clearTimeout = function () {
   clearTimeout(this._timer);
@@ -56818,7 +56565,6 @@ RequestBase.prototype.clearTimeout = function () {
  * @param {Function}
  * @api public
  */
-
 
 RequestBase.prototype.parse = function (fn) {
   this._parser = fn;
@@ -56842,7 +56588,6 @@ RequestBase.prototype.parse = function (fn) {
  * @api public
  */
 
-
 RequestBase.prototype.responseType = function (val) {
   this._responseType = val;
   return this;
@@ -56855,7 +56600,6 @@ RequestBase.prototype.responseType = function (val) {
  * @param {Function}
  * @api public
  */
-
 
 RequestBase.prototype.serialize = function (fn) {
   this._serializer = fn;
@@ -56874,7 +56618,6 @@ RequestBase.prototype.serialize = function (fn) {
  * @return {Request} for chaining
  * @api public
  */
-
 
 RequestBase.prototype.timeout = function (options) {
   if (!options || _typeof(options) !== 'object') {
@@ -56917,7 +56660,6 @@ RequestBase.prototype.timeout = function (options) {
  * @return {Request} for chaining
  * @api public
  */
-
 
 RequestBase.prototype.retry = function (count, fn) {
   // Default to 1 if no count passed or true
@@ -56973,7 +56715,6 @@ RequestBase.prototype._shouldRetry = function (err, res) {
  * @api private
  */
 
-
 RequestBase.prototype._retry = function () {
   this.clearTimeout(); // node
 
@@ -56994,7 +56735,6 @@ RequestBase.prototype._retry = function () {
  * @param {Function} [reject]
  * @return {Request}
  */
-
 
 RequestBase.prototype.then = function (resolve, reject) {
   var _this = this;
@@ -57040,7 +56780,6 @@ RequestBase.prototype.catch = function (cb) {
  * Allow for extension
  */
 
-
 RequestBase.prototype.use = function (fn) {
   fn(this);
   return this;
@@ -57072,7 +56811,6 @@ RequestBase.prototype._isResponseOK = function (res) {
  * @api public
  */
 
-
 RequestBase.prototype.get = function (field) {
   return this._header[field.toLowerCase()];
 };
@@ -57087,7 +56825,6 @@ RequestBase.prototype.get = function (field) {
  * @api private
  * @deprecated
  */
-
 
 RequestBase.prototype.getHeader = RequestBase.prototype.get;
 /**
@@ -57137,7 +56874,6 @@ RequestBase.prototype.set = function (field, val) {
  * @param {String} field field name
  */
 
-
 RequestBase.prototype.unset = function (field) {
   delete this._header[field.toLowerCase()];
   delete this.header[field];
@@ -57162,7 +56898,6 @@ RequestBase.prototype.unset = function (field) {
  * @return {Request} for chaining
  * @api public
  */
-
 
 RequestBase.prototype.field = function (name, val) {
   // name should be either a string or an object.
@@ -57190,7 +56925,6 @@ RequestBase.prototype.field = function (name, val) {
     return this;
   } // val should be defined now
 
-
   if (val === null || undefined === val) {
     throw new Error('.field(name, val) val can not be empty');
   }
@@ -57209,7 +56943,6 @@ RequestBase.prototype.field = function (name, val) {
  * @return {Request} request
  * @api public
  */
-
 
 RequestBase.prototype.abort = function () {
   if (this._aborted) {
@@ -57259,7 +56992,6 @@ RequestBase.prototype._auth = function (user, pass, options, base64Encoder) {
  * @api public
  */
 
-
 RequestBase.prototype.withCredentials = function (on) {
   // This is browser-only functionality. Node side is no-op.
   if (on === undefined) on = true;
@@ -57274,7 +57006,6 @@ RequestBase.prototype.withCredentials = function (on) {
  * @api public
  */
 
-
 RequestBase.prototype.redirects = function (n) {
   this._maxRedirects = n;
   return this;
@@ -57286,7 +57017,6 @@ RequestBase.prototype.redirects = function (n) {
  * @param {Number} n number of bytes
  * @return {Request} for chaining
  */
-
 
 RequestBase.prototype.maxResponseSize = function (n) {
   if (typeof n !== 'number') {
@@ -57304,7 +57034,6 @@ RequestBase.prototype.maxResponseSize = function (n) {
  * @return {Object} describing method, url, and data of this request
  * @api public
  */
-
 
 RequestBase.prototype.toJSON = function () {
   return {
@@ -57355,7 +57084,6 @@ RequestBase.prototype.toJSON = function () {
  */
 // eslint-disable-next-line complexity
 
-
 RequestBase.prototype.send = function (data) {
   var isObj = isObject(data);
   var type = this._header['content-type'];
@@ -57373,7 +57101,6 @@ RequestBase.prototype.send = function (data) {
   } else if (data && this._data && this._isHost(this._data)) {
     throw new Error("Can't merge these send calls");
   } // merge
-
 
   if (isObj && isObject(this._data)) {
     for (var key in data) {
@@ -57396,7 +57123,6 @@ RequestBase.prototype.send = function (data) {
   if (!isObj || this._isHost(data)) {
     return this;
   } // default to json
-
 
   if (!type) this.type('json');
   return this;
@@ -57429,7 +57155,6 @@ RequestBase.prototype.send = function (data) {
  * @api public
  */
 
-
 RequestBase.prototype.sortQuery = function (sort) {
   // _sort default to true but otherwise can be a function or boolean
   this._sort = typeof sort === 'undefined' ? true : sort;
@@ -57440,7 +57165,6 @@ RequestBase.prototype.sortQuery = function (sort) {
  *
  * @api private
  */
-
 
 RequestBase.prototype._finalizeQueryString = function () {
   var query = this._query.join('&');
@@ -57468,7 +57192,6 @@ RequestBase.prototype._finalizeQueryString = function () {
   }
 }; // For backwards compat only
 
-
 RequestBase.prototype._appendQueryString = function () {
   console.warn('Unsupported');
 };
@@ -57477,7 +57200,6 @@ RequestBase.prototype._appendQueryString = function () {
  *
  * @api private
  */
-
 
 RequestBase.prototype._timeoutError = function (reason, timeout, errno) {
   if (this._aborted) {
@@ -57503,7 +57225,6 @@ RequestBase.prototype._setTimeouts = function () {
     }, this._timeout);
   } // response timeout
 
-
   if (this._responseTimeout && !this._responseTimeoutTimer) {
     this._responseTimeoutTimer = setTimeout(function () {
       self._timeoutError('Response timeout of ', self._responseTimeout, 'ETIMEDOUT');
@@ -57521,7 +57242,6 @@ var utils = require('./utils');
 /**
  * Expose `ResponseBase`.
  */
-
 
 module.exports = ResponseBase;
 /**
@@ -57541,7 +57261,6 @@ function ResponseBase(obj) {
  * @api private
  */
 
-
 function mixin(obj) {
   for (var key in ResponseBase.prototype) {
     if (Object.prototype.hasOwnProperty.call(ResponseBase.prototype, key)) obj[key] = ResponseBase.prototype[key];
@@ -57557,7 +57276,6 @@ function mixin(obj) {
  * @api public
  */
 
-
 ResponseBase.prototype.get = function (field) {
   return this.header[field.toLowerCase()];
 };
@@ -57572,7 +57290,6 @@ ResponseBase.prototype.get = function (field) {
  * @param {Object} header
  * @api private
  */
-
 
 ResponseBase.prototype._setHeaderProperties = function (header) {
   // TODO: moar!
@@ -57616,7 +57333,6 @@ ResponseBase.prototype._setHeaderProperties = function (header) {
  * @param {Number} status
  * @api private
  */
-
 
 ResponseBase.prototype._setStatusProperties = function (status) {
   var type = status / 100 | 0; // status / class
@@ -57664,7 +57380,6 @@ exports.type = function (str) {
  * @api private
  */
 
-
 exports.params = function (str) {
   return str.split(/ *; */).reduce(function (obj, str) {
     var parts = str.split(/ *= */);
@@ -57682,7 +57397,6 @@ exports.params = function (str) {
  * @api private
  */
 
-
 exports.parseLinks = function (str) {
   return str.split(/ *, */).reduce(function (obj, str) {
     var parts = str.split(/ *; */);
@@ -57699,7 +57413,6 @@ exports.parseLinks = function (str) {
  * @return {Object} header
  * @api private
  */
-
 
 exports.cleanHeader = function (header, changesOrigin) {
   delete header['content-type'];
@@ -57847,7 +57560,6 @@ var swarmHashBlock = function swarmHashBlock(length, data) {
   return keccak(bytes).slice(2);
 }; // (Bytes | Uint8Array | String) -> String
 
-
 var swarmHash = function swarmHash(data) {
   if (typeof data === "string" && data.slice(0, 2) !== "0x") {
     data = Bytes.fromString(data);
@@ -57908,7 +57620,6 @@ module.exports = function (_ref) {
   }; // String -> JSON -> Map String JSON
   //   Merges an array of keys and an array of vals into an object.
 
-
   var toMap = function toMap(keys) {
     return function (vals) {
       var map = {};
@@ -57921,7 +57632,6 @@ module.exports = function (_ref) {
     };
   }; // ∀ a . Map String a -> Map String a -> Map String a
   //   Merges two maps into one.
-
 
   var merge = function merge(a) {
     return function (b) {
@@ -57939,7 +57649,6 @@ module.exports = function (_ref) {
     };
   }; // ∀ a . [a] -> [a] -> Bool
 
-
   var equals = function equals(a) {
     return function (b) {
       if (a.length !== b.length) {
@@ -57954,14 +57663,12 @@ module.exports = function (_ref) {
     };
   }; // String -> String -> String
 
-
   var rawUrl = function rawUrl(swarmUrl) {
     return function (hash) {
       return "".concat(swarmUrl, "/bzz-raw:/").concat(hash);
     };
   }; // String -> String -> Promise Uint8Array
   //   Gets the raw contents of a Swarm hash address.
-
 
   var downloadData = function downloadData(swarmUrl) {
     return function (hash) {
@@ -57987,7 +57694,6 @@ module.exports = function (_ref) {
   //   Solves the manifest of a Swarm address recursively.
   //   Returns a map from full paths to entries.
 
-
   var downloadEntries = function downloadEntries(swarmUrl) {
     return function (hash) {
       var search = function search(hash) {
@@ -58003,7 +57709,6 @@ module.exports = function (_ref) {
             //   if type is bzz-manifest, go deeper
             //   if not, add it to the routing table
 
-
             var downloadEntry = function downloadEntry(entry) {
               if (entry.path === undefined) {
                 return Promise.resolve();
@@ -58011,7 +57716,6 @@ module.exports = function (_ref) {
                 return entry.contentType === "application/bzz-manifest+json" ? search(entry.hash)(path + entry.path)(routes) : Promise.resolve(impureInsert(path + entry.path)(format(entry))(routes));
               }
             }; // Downloads the initial manifest and then each entry.
-
 
             return downloadData(swarmUrl)(hash).then(function (text) {
               return JSON.parse(toString(text)).entries;
@@ -58029,7 +57733,6 @@ module.exports = function (_ref) {
   }; // String -> String -> Promise (Map String String)
   //   Same as `downloadEntries`, but returns only hashes (no types).
 
-
   var downloadRoutes = function downloadRoutes(swarmUrl) {
     return function (hash) {
       return downloadEntries(swarmUrl)(hash).then(function (entries) {
@@ -58041,7 +57744,6 @@ module.exports = function (_ref) {
   }; // String -> String -> Promise (Map String File)
   //   Gets the entire directory tree in a Swarm address.
   //   Returns a promise mapping paths to file contents.
-
 
   var downloadDirectory = function downloadDirectory(swarmUrl) {
     return function (hash) {
@@ -58073,7 +57775,6 @@ module.exports = function (_ref) {
   //   Gets the raw contents of a Swarm hash address.
   //   Returns a promise with the downloaded file path.
 
-
   var downloadDataToDisk = function downloadDataToDisk(swarmUrl) {
     return function (hash) {
       return function (filePath) {
@@ -58083,7 +57784,6 @@ module.exports = function (_ref) {
   }; // String -> String -> String -> Promise (Map String String)
   //   Gets the entire directory tree in a Swarm address.
   //   Returns a promise mapping paths to file contents.
-
 
   var downloadDirectoryToDisk = function downloadDirectoryToDisk(swarmUrl) {
     return function (hash) {
@@ -58111,7 +57811,6 @@ module.exports = function (_ref) {
   //   Uploads raw data to Swarm.
   //   Returns a promise with the uploaded hash.
 
-
   var uploadData = function uploadData(swarmUrl) {
     return function (data) {
       return new Promise(function (resolve, reject) {
@@ -58133,7 +57832,6 @@ module.exports = function (_ref) {
   //   route. Returns a promise containing the uploaded hash.
   //   FIXME: for some reasons Swarm-Gateways is sometimes returning
   //   error 404 (bad request), so we retry up to 3 times. Why?
-
 
   var uploadToManifest = function uploadToManifest(swarmUrl) {
     return function (hash) {
@@ -58172,7 +57870,6 @@ module.exports = function (_ref) {
     };
   }; // String -> {type: String, data: Uint8Array} -> Promise String
 
-
   var uploadFile = function uploadFile(swarmUrl) {
     return function (file) {
       return uploadDirectory(swarmUrl)({
@@ -58180,7 +57877,6 @@ module.exports = function (_ref) {
       });
     };
   }; // String -> String -> Promise String
-
 
   var uploadFileFromDisk = function uploadFileFromDisk(swarmUrl) {
     return function (filePath) {
@@ -58195,7 +57891,6 @@ module.exports = function (_ref) {
   //   Uploads a directory to Swarm. The directory is
   //   represented as a map of routes and files.
   //   A default path is encoded by having a "" route.
-
 
   var uploadDirectory = function uploadDirectory(swarmUrl) {
     return function (directory) {
@@ -58215,13 +57910,11 @@ module.exports = function (_ref) {
     };
   }; // String -> Promise String
 
-
   var uploadDataFromDisk = function uploadDataFromDisk(swarmUrl) {
     return function (filePath) {
       return fs.readFile(filePath).then(uploadData(swarmUrl));
     };
   }; // String -> Nullable String -> String -> Promise String
-
 
   var uploadDirectoryFromDisk = function uploadDirectoryFromDisk(swarmUrl) {
     return function (defaultPath) {
@@ -58253,7 +57946,6 @@ module.exports = function (_ref) {
   }; // String -> UploadInfo -> Promise String
   //   Simplified multi-type upload which calls the correct
   //   one based on the type of the argument given.
-
 
   var _upload = function upload(swarmUrl) {
     return function (arg) {
@@ -58290,7 +57982,6 @@ module.exports = function (_ref) {
   //   the type of the argument given, and on whether the Swwarm address has a
   //   directory or a file.
 
-
   var _download = function download(swarmUrl) {
     return function (hash) {
       return function (path) {
@@ -58307,7 +57998,6 @@ module.exports = function (_ref) {
   //   Downloads the Swarm binaries into a path. Returns a promise that only
   //   resolves when the exact Swarm file is there, and verified to be correct.
   //   If it was already there to begin with, skips the download.
-
 
   var downloadBinary = function downloadBinary(path, archives) {
     var system = os.platform().replace("win32", "windows") + "-" + (os.arch() === "x64" ? "amd64" : "386");
@@ -58331,7 +58021,6 @@ module.exports = function (_ref) {
   // }
   // SwarmSetup ~> Promise Process
   //   Starts the Swarm process.
-
 
   var startProcess = function startProcess(swarmSetup) {
     return new Promise(function (resolve, reject) {
@@ -58386,7 +58075,6 @@ module.exports = function (_ref) {
   }; // Process ~> Promise ()
   //   Stops the Swarm process.
 
-
   var stopProcess = function stopProcess(process) {
     return new Promise(function (resolve, reject) {
       process.stderr.removeAllListeners('data');
@@ -58414,7 +58102,6 @@ module.exports = function (_ref) {
   //   user is done with the API and the Swarm process is closed.
   //   TODO: check if Swarm process is already running (improve `isAvailable`)
 
-
   var local = function local(swarmSetup) {
     return function (useAPI) {
       return _isAvailable("http://localhost:8500").then(function (isAvailable) {
@@ -58434,7 +58121,6 @@ module.exports = function (_ref) {
   //   Perfoms a test upload to determine that.
   //   TODO: improve this?
 
-
   var _isAvailable = function isAvailable(swarmUrl) {
     var testFile = "test";
     var testHash = "c9a99c7d326dcc6316f32fe2625b311f6dc49a175e6877681ded93137d3569e7";
@@ -58448,7 +58134,6 @@ module.exports = function (_ref) {
   //   Determines that by checking that it (i) is a JSON, (ii) has a .entries.
   //   TODO: improve this?
 
-
   var isDirectory = function isDirectory(swarmUrl) {
     return function (hash) {
       return downloadData(swarmUrl)(hash).then(function (data) {
@@ -58460,7 +58145,6 @@ module.exports = function (_ref) {
       });
     };
   }; // Uncurries a function; used to allow the f(x,y,z) style on exports.
-
 
   var uncurry = function uncurry(f) {
     return function (a, b, c, d, e) {
@@ -58476,22 +58160,18 @@ module.exports = function (_ref) {
   }; // () -> Promise Bool
   //   Not sure how to mock Swarm to test it properly. Ideas?
 
-
   var test = function test() {
     return Promise.resolve(true);
   }; // Uint8Array -> String
-
 
   var toString = function toString(uint8Array) {
     return bytes.toString(bytes.fromUint8Array(uint8Array));
   }; // String -> Uint8Array
 
-
   var fromString = function fromString(string) {
     return bytes.toUint8Array(bytes.fromString(string));
   }; // String -> SwarmAPI
   //   Fixes the `swarmUrl`, returning an API where you don't have to pass it.
-
 
   var at = function at(swarmUrl) {
     return {
@@ -59822,7 +59502,6 @@ arguments[4][100][0].apply(exports,arguments)
     return true;
   };
 
-
   // Internal recursive comparison function for `isEqual`.
   var eq, deepEq;
   eq = function(a, b, aStack, bStack) {
@@ -60686,7 +60365,6 @@ Url.prototype.parse = function(url, parseQueryString, slashesDenoteHost) {
     }
   }
 
-
   // chop off from the tail first.
   var hash = rest.indexOf('#');
   if (hash !== -1) {
@@ -61461,7 +61139,6 @@ function isArrayBufferView(value) {
 }
 exports.isArrayBufferView = isArrayBufferView;
 
-
 function isUint8Array(value) {
   return whichTypedArray(value) === 'Uint8Array';
 }
@@ -61789,7 +61466,6 @@ exports.format = function(f) {
   return str;
 };
 
-
 // Mark that a method should not be used.
 // Returns a modified function which warns once by default.
 // If --no-deprecation is set, then it is a no-op.
@@ -61823,7 +61499,6 @@ exports.deprecate = function(fn, msg) {
   return deprecated;
 };
 
-
 var debugs = {};
 var debugEnvRegex = /^$/;
 
@@ -61850,7 +61525,6 @@ exports.debuglog = function(set) {
   }
   return debugs[set];
 };
-
 
 /**
  * Echos the value of a value. Trys to print the value out
@@ -61886,7 +61560,6 @@ function inspect(obj, opts) {
 }
 exports.inspect = inspect;
 
-
 // http://en.wikipedia.org/wiki/ANSI_escape_code#graphics
 inspect.colors = {
   'bold' : [1, 22],
@@ -61917,7 +61590,6 @@ inspect.styles = {
   'regexp': 'red'
 };
 
-
 function stylizeWithColor(str, styleType) {
   var style = inspect.styles[styleType];
 
@@ -61929,11 +61601,9 @@ function stylizeWithColor(str, styleType) {
   }
 }
 
-
 function stylizeNoColor(str, styleType) {
   return str;
 }
-
 
 function arrayToHash(array) {
   var hash = {};
@@ -61944,7 +61614,6 @@ function arrayToHash(array) {
 
   return hash;
 }
-
 
 function formatValue(ctx, value, recurseTimes) {
   // Provide a hook for user-specified inspect functions.
@@ -62058,7 +61727,6 @@ function formatValue(ctx, value, recurseTimes) {
   return reduceToSingleString(output, base, braces);
 }
 
-
 function formatPrimitive(ctx, value) {
   if (isUndefined(value))
     return ctx.stylize('undefined', 'undefined');
@@ -62077,11 +61745,9 @@ function formatPrimitive(ctx, value) {
     return ctx.stylize('null', 'null');
 }
 
-
 function formatError(value) {
   return '[' + Error.prototype.toString.call(value) + ']';
 }
-
 
 function formatArray(ctx, value, recurseTimes, visibleKeys, keys) {
   var output = [];
@@ -62101,7 +61767,6 @@ function formatArray(ctx, value, recurseTimes, visibleKeys, keys) {
   });
   return output;
 }
-
 
 function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
   var name, str, desc;
@@ -62161,7 +61826,6 @@ function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
   return name + ': ' + str;
 }
 
-
 function reduceToSingleString(output, base, braces) {
   var numLinesEst = 0;
   var length = output.reduce(function(prev, cur) {
@@ -62181,7 +61845,6 @@ function reduceToSingleString(output, base, braces) {
 
   return braces[0] + base + ' ' + output.join(', ') + ' ' + braces[1];
 }
-
 
 // NOTE: These type checking functions intentionally don't use `instanceof`
 // because it is fragile and can be easily faked with `Object.create()`.
@@ -62272,11 +61935,9 @@ function objectToString(o) {
   return Object.prototype.toString.call(o);
 }
 
-
 function pad(n) {
   return n < 10 ? '0' + n.toString(10) : n.toString(10);
 }
-
 
 var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
               'Oct', 'Nov', 'Dec'];
@@ -62290,12 +61951,10 @@ function timestamp() {
   return [d.getDate(), months[d.getMonth()], time].join(' ');
 }
 
-
 // log is just a thin wrapper to console.log that prepends a timestamp
 exports.log = function() {
   console.log('%s - %s', timestamp(), exports.format.apply(exports, arguments));
 };
-
 
 /**
  * Inherit the prototype methods from one constructor into another.
@@ -62489,9 +62148,9 @@ function encode(num, out, offset) {
     num >>>= 7
   }
   out[offset] = num | 0
-  
+
   encode.bytes = offset - oldOffset + 1
-  
+
   return out
 }
 
@@ -66113,7 +65772,7 @@ module.exports = {
 // modifications and pruning. It is licensed under MIT:
 //
 // Copyright 2015-2016 Chen, Yi-Cyuan
-//  
+//
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
 // "Software"), to deal in the Software without restriction, including
@@ -66121,10 +65780,10 @@ module.exports = {
 // distribute, sublicense, and/or sell copies of the Software, and to
 // permit persons to whom the Software is furnished to do so, subject to
 // the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be
 // included in all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -66576,7 +66235,7 @@ function bytesToUuid(buf, offset) {
   var i = offset || 0;
   var bth = byteToHex;
   // join used to fix memory issue caused by concatenation: https://bugs.chromium.org/p/v8/issues/detail?id=3175#c4
-  return ([bth[buf[i++]], bth[buf[i++]], 
+  return ([bth[buf[i++]], bth[buf[i++]],
 	bth[buf[i++]], bth[buf[i++]], '-',
 	bth[buf[i++]], bth[buf[i++]], '-',
 	bth[buf[i++]], bth[buf[i++]], '-',
@@ -73140,7 +72799,6 @@ try {
 var NativeWebSocket = _globalThis.WebSocket || _globalThis.MozWebSocket;
 var websocket_version = require('./version');
 
-
 /**
  * Expose a W3C WebSocket class with just one or two arguments.
  */
@@ -73693,7 +73351,6 @@ function _createXHR(options) {
     xhr.send(body || null)
 
     return xhr
-
 
 }
 
