@@ -80,7 +80,6 @@ const inject = async () => {
 
 function onReady() {
   (async () => {
-
     const injected = await inject();
     if (!injected) {
       alert("web3 object not found");
