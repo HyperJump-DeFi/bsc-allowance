@@ -42,22 +42,22 @@ body {
 
 /* -- Nav -- */
 
-.navbar {
-  position: fixed;
-  left: 0%;
-  top: 0%;
-  right: 0%;
-  bottom: auto;
-  height: 20%;
-  background-color: transparent;
-  background-image: url('/img/logo-splash.png');
-  background-position: 50% 0%;
-  background-size: contain;
-  background-repeat: no-repeat;
-  z-index: 1000;
-}
+/* .splash { */
+/*   position: fixed; */
+/*   left: 0%; */
+/*   top: 0%; */
+/*   right: 0%; */
+/*   bottom: auto; */
+/*   height: 20%; */
+/*   background-color: transparent; */
+/*   background-image: url('/img/logo-splash.png'); */
+/*   background-position: 50% 0%; */
+/*   background-size: contain; */
+/*   background-repeat: no-repeat; */
+/*   z-index: 1000; */
+/* } */
 
-/* -- Body -- */
+/* /\* -- Body -- *\/ */
 body {
   background-image: url('/img/bg.jpg');
 }
