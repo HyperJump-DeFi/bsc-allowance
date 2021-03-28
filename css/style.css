@@ -8,7 +8,7 @@ body {
   left: 0;
   top: 0;
   font-size: 100%;
-
+  background-image: url('/img/bg.jpg');
   overflow-x: hidden;
 }
 
@@ -40,28 +40,6 @@ body {
   z-index: 100;
 }
 
-/* -- Nav -- */
-
-/* .splash { */
-/*   position: fixed; */
-/*   left: 0%; */
-/*   top: 0%; */
-/*   right: 0%; */
-/*   bottom: auto; */
-/*   height: 20%; */
-/*   background-color: transparent; */
-/*   background-image: url('/img/logo-splash.png'); */
-/*   background-position: 50% 0%; */
-/*   background-size: contain; */
-/*   background-repeat: no-repeat; */
-/*   z-index: 1000; */
-/* } */
-
-/* /\* -- Body -- *\/ */
-body {
-  background-image: url('/img/bg.jpg');
-}
-
 .content {
   padding: 20px;
   align-items: center;
@@ -80,7 +58,12 @@ header {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  margin: 3rem 0 2rem;
+  margin: 0 0 2rem 0;
+}
+
+.header-right {
+  display: flex;
+  align-items: flex-end;
 }
 
 h1 {
@@ -97,7 +80,7 @@ h2 {
     max-width: 94%;
   }
   .content {
-    padding: 0.6rem;
+    padding: 0 1rem;
   }
 }
 
@@ -114,7 +97,7 @@ h2 {
 .grid-container {
   display: flex;
   padding: 1rem 0;
-  justify-content: space-around;
+  justify-content: space-between;
 }
 
 .grid-container.grid-header {
@@ -123,6 +106,10 @@ h2 {
   font-weight: 700;
   color: #fff;
   font-size: 1.2rem;
+  margin-left: -10px;
+  margin-right: -10px;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 .grid-container.grid-header .grid-address {
@@ -203,7 +190,7 @@ h2 {
 
 @media only screen and (min-width: 769px) {
   .grid-address {
-    width: 40%;
+    width: 38%;
   }
 
   .grid-action {
