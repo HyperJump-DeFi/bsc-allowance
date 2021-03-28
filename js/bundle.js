@@ -87,14 +87,16 @@ function onReady() {
       return;
     }
 
+    document.querySelector("#connect-btn").style.display = "none";
     web3.eth.requestAccounts().then((accounts) => {
       init(accounts[0]);
-
+      document.querySelector("#disconnect-btn").style.display = "block";
     }).catch((err) => {
       console.log(err);
       // some web3 objects don't have requestAccounts
       ethereum.enable().then((accounts) => {
         init(accounts[0]);
+        document.querySelector("#disconnect-btn").style.display = "block";
       }).catch((err) => {
         alert(e + err);
       });
@@ -204,7 +206,41 @@ function onReady() {
 
     $('.revoke-10-btn').click(onRevoke10);
     $('.revoke-all-btn').click(onRevokeAll);
+    $("#disconnect-btn").click(handleDisconnection);
+    $("#connect-btn").click(handleConnection);
+
   })();
+}
+
+async function handleDisconnection() {
+  await disconnect();
+  $("#results").children().not(':first').remove();
+  document.querySelector("#connect-btn").style.display = "block";
+  document.querySelector("#disconnect-btn").style.display = "none";
+}
+
+function handleConnection() {
+  onReady();
+}
+
+async function disconnect() {
+  const foundProvider = provider || window.web3.currentProvider;
+
+  if (!foundProvider) {
+    console.log("No provider found");
+    return;
+  }
+
+  if(foundProvider.close) {
+    console.log("Killing the wallet connection", foundProvider);
+    await foundProvider.close();
+
+    await web3Modal.clearCachedProvider();
+  }
+  provider = null;
+  window.web3.currentProvider = null;
+
+  selectedAccount = null;
 }
 
 $(onReady);
