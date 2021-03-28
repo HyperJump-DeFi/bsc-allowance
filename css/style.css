@@ -64,6 +64,8 @@ header {
 .header-right {
   display: flex;
   align-items: flex-end;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 h1 {
@@ -200,4 +202,13 @@ h2 {
 
 #WEB3_CONNECT_MODAL_ID > * {
   z-index: 100;
+}
+
+#disconnect-btn {
+  display: none;
+}
+
+.red {
+  border-color: rgb(193, 39, 45);
+  background-color: rgb(193, 39, 45);
 }
