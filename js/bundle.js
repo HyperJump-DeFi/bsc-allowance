@@ -2,36 +2,95 @@
 let Web3 = require('web3');
 let request = require('superagent');
 
-const approvalHash = "0x095ea7b3";
-const unlimitedAllowance = "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
-const approvalABI = [
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "spender",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "tokens",
-        "type": "uint256"
-      }
-    ],
-    "name": "approve",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "success",
-        "type": "bool"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  }
-];
+  const ERC20_ABI = [
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "name",
+      "outputs": [
+        {
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "decimals",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_owner",
+          "type": "address"
+        }
+      ],
+      "name": "balanceOf",
+      "outputs": [
+        {
+          "name": "balance",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "symbol",
+      "outputs": [
+        {
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    }
+  ];
+  const approvalHash = "0x095ea7b3";
+  const unlimitedAllowance = "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
+  const approvalABI = [
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "spender",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "tokens",
+          "type": "uint256"
+        }
+      ],
+      "name": "approve",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "success",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ];
 
 // -- Web3Modal
 const Web3Modal = window.Web3Modal.default;
@@ -145,6 +204,11 @@ function onReady() {
             approveObj.contract = web3.utils.toChecksumAddress(tx.to);
             approveObj.approved = web3.utils.toChecksumAddress("0x" + tx.input.substring(34, 74));
 
+            const contract = new web3.eth.Contract(ERC20_ABI, approveObj.contract);
+            contract.methods.symbol().call().then(symbol => {
+              $("#results").find(`#${approveObj.contract} .grid-symbol`).html(`<span>${symbol}</span>`);
+            });
+
             let allowance = tx.input.substring(74);
             if(allowance.includes(unlimitedAllowance)) {
               approveObj.allowance = "unlimited";
@@ -173,7 +237,8 @@ function onReady() {
       let parentElement = $('#results');
       for(let index in txs) {
         parentElement.append(`
-        <div class="grid-container">
+        <div class="grid-container" id="${txs[index].contract}">
+        <div class="grid-symbol"></div>
         <div class="grid-address"><a href=${explorerURL + txs[index].contract} target="_blank" rel="noopener noreferrer">${txs[index].contract}</a></div>
         <div class="grid-address"><a href=${explorerURL + txs[index].approved} target="_blank" rel="noopener noreferrer">${txs[index].approved}</a></div>
         <div class="grid-action"><span class="${txs[index].allowance}">${txs[index].allowance}</span><button class="${txs[index].allowance}" id="revoke${index}"> Revoke</button></div>
