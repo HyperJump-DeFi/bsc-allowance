@@ -87,15 +87,42 @@ h2 {
   .grid-container.grid-header div:first-child {
     width: 40%;
   }
+  .header-right {
+    justify-content: space-evenly;
+  }
 
+  .grid-container .grid-symbol {
+    width: 15%;
+  }
+  #results .grid-address {
+    width: 30%;
+  }
+  #results .grid-address:first-child {
+    width: 45%;
+  }
+  #results .grid-action {
+    width: 25%;
+  }
+  #results .grid-action button {
+    padding: .5rem .5rem;
+  }
+  header h1 {
+    font-size: 2.5rem;
+  }
 }
 
 @media only screen and (max-width: 399px) {
-  .container {
-    max-width: 98%;
+  header h1 {
+    font-size: 2rem;
   }
-  .content {
-    padding: 0.2rem;
+  header .header-left {
+    padding-right: 1rem;
+  }
+  #results .grid-address:first-child {
+    width: 38%;
+  }
+  #results .grid-action {
+    width: 35%;
   }
 }
 
@@ -127,7 +154,7 @@ h2 {
 }
 
 .grid-address {
-  width: 30%;
+  width: 25%;
   overflow: hidden;
   text-overflow: ellipsis;
   padding-top: .6rem;
@@ -142,6 +169,7 @@ h2 {
 .grid-symbol {
   padding-top: .6rem;
   width: 10%;
+  white-space: nowrap;
 }
 
 .grid-symbol span {
@@ -158,7 +186,7 @@ h2 {
 }
 
 .grid-action {
-  width: 30%;
+  width: 35%;
   display: flex;
   justify-content: space-between;
   color: #fff;
