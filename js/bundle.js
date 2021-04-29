@@ -164,7 +164,6 @@ const inject = async () => {
     window.web3 = new Web3(window.ethereum);
     window.ethereum.enable();
     return true;
-
   } else {
     try {
       web3Modal = new Web3Modal({
@@ -185,18 +184,33 @@ const inject = async () => {
   return false;
 }
 
-function onReady() {
+async function onChainChange(chainId) {
+  $("#results").children().not(':first').remove();
+  await inject();
+  await onReady();
+}
+
+function initialise() {
   (async () => {
     const injected = await inject();
     if (!injected) {
       alert("web3 object not found");
       return;
     }
+    if (window.web3.currentProvider) {
+      window.web3.currentProvider.on("chainChanged", async (chainId) => {
+        await onChainChange(chainId);
+      });
+    }
+    onReady();
+  })();
+}
 
+async function onReady() {
     const chainId = await web3.eth.getChainId();
-    const settings = networkSettings[chainId];
+    let settings = networkSettings[chainId];
     if (!settings) {
-      console.error(`Chain ID ${chainId} is not supported`);
+      alert(`Error: chain ID ${chainId} is not supported`);
       return;
     }
     try {
@@ -206,7 +220,7 @@ function onReady() {
           params: [settings]
         })
     } catch (e) {
-      alert(`Cannot connect to BSC network: ${e.message}`);
+      alert(`Cannot connect to network: ${e.message}`);
       return;
     }
 
@@ -264,7 +278,7 @@ function onReady() {
 
         for(let tx of dataObj) {
 
-          if(tx.input.includes(approvalHash)) {
+          if(tx.input && tx.input.includes(approvalHash)) {
             let approveObj = {};
             approveObj.contract = web3.utils.toChecksumAddress(tx.to);
             approveObj.approved = web3.utils.toChecksumAddress("0x" + tx.input.substring(34, 74));
@@ -337,11 +351,11 @@ function onReady() {
     $('.revoke-10-btn').click(onRevoke10);
     $('.revoke-all-btn').click(onRevokeAll);
     $("#disconnect-btn").click(handleDisconnection);
-
-  })();
 }
 
-$("#connect-btn").click(handleConnection);
+$("#connect-btn").click(async () => {
+  await handleConnection();
+});
 
 async function handleDisconnection() {
   await disconnect();
@@ -350,8 +364,9 @@ async function handleDisconnection() {
   document.querySelector("#disconnect-btn").style.display = "none";
 }
 
-function handleConnection() {
-  onReady();
+async function handleConnection() {
+  await inject();
+  await onReady();
 }
 
 async function disconnect() {
@@ -374,7 +389,7 @@ async function disconnect() {
   selectedAccount = null;
 }
 
-$(onReady);
+$(initialise);
 },{"superagent":339,"web3":413}],2:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
