@@ -99,6 +99,18 @@ const WalletConnectProvider = window.WalletConnectProvider.default;
 let web3Modal
 let provider;
 
+const bscNetworkSettings = {
+  chainId: '0x38',
+  chainName: 'BSC Mainnet',
+  nativeCurrency: {
+    name: 'Binance Coin',
+    symbol: 'BNB',
+    decimals: 18,
+  },
+  rpcUrls: ['https://bsc-dataseed.binance.org'],
+  blockExplorerUrls: ['https://bscscan.com/'],
+};
+
 const providerOptions = {
   walletconnect: {
     package: WalletConnectProvider,
@@ -144,6 +156,20 @@ function onReady() {
     if (!injected) {
       alert("web3 object not found");
       return;
+    }
+
+    const chainId = await web3.eth.getChainId();
+    if (![1, 56, 97].includes(chainId)) {
+      try {
+        await web3.eth.currentProvider
+          .request({
+            method: 'wallet_addEthereumChain',
+            params: [bscNetworkSettings]
+          })
+      } catch (e) {
+        alert(`Cannot connect to BSC network: ${e.message}`);
+        return;
+      }
     }
 
     document.querySelector("#connect-btn").style.display = "none";
@@ -272,10 +298,11 @@ function onReady() {
     $('.revoke-10-btn').click(onRevoke10);
     $('.revoke-all-btn').click(onRevokeAll);
     $("#disconnect-btn").click(handleDisconnection);
-    $("#connect-btn").click(handleConnection);
 
   })();
 }
+
+$("#connect-btn").click(handleConnection);
 
 async function handleDisconnection() {
   await disconnect();
