@@ -99,17 +99,52 @@ const WalletConnectProvider = window.WalletConnectProvider.default;
 let web3Modal
 let provider;
 
-const bscNetworkSettings = {
-  chainId: '0x38',
-  chainName: 'BSC Mainnet',
-  nativeCurrency: {
-    name: 'Binance Coin',
-    symbol: 'BNB',
-    decimals: 18,
-  },
-  rpcUrls: ['https://bsc-dataseed.binance.org'],
-  blockExplorerUrls: ['https://bscscan.com/'],
-};
+  const networkSettings = {
+    1: {
+      chainId: '0x38',
+      chainName: 'BSC Mainnet',
+      nativeCurrency: {
+        name: 'Binance Coin',
+        symbol: 'BNB',
+        decimals: 18,
+      },
+      rpcUrls: ['https://bsc-dataseed.binance.org'],
+      blockExplorerUrls: ['https://bscscan.com/'],
+    },
+    56: {
+      chainId: '0x38',
+      chainName: 'BSC Mainnet',
+      nativeCurrency: {
+        name: 'Binance Coin',
+        symbol: 'BNB',
+        decimals: 18,
+      },
+      rpcUrls: ['https://bsc-dataseed.binance.org'],
+      blockExplorerUrls: ['https://bscscan.com/']
+    },
+    97: {
+      chainId: '0x38',
+      chainName: 'BSC Mainnet',
+      nativeCurrency: {
+        name: 'Binance Coin',
+        symbol: 'BNB',
+        decimals: 18,
+      },
+      rpcUrls: ['https://bsc-dataseed.binance.org'],
+      blockExplorerUrls: ['https://bscscan.com/']
+    },
+    250: {
+      chainId: '0xFA',
+      chainName: 'FANTOM Mainnet',
+      nativeCurrency: {
+        name: 'Fantom',
+        symbol: 'FTM',
+        decimals: 18,
+      },
+      rpcUrls: ['https://rpcapi.fantom.network'],
+      blockExplorerUrls: ['https://ftmscan.com/']
+    }
+  };
 
 const providerOptions = {
   walletconnect: {
@@ -159,17 +194,20 @@ function onReady() {
     }
 
     const chainId = await web3.eth.getChainId();
-    if (![1, 56, 97].includes(chainId)) {
-      try {
-        await web3.eth.currentProvider
-          .request({
-            method: 'wallet_addEthereumChain',
-            params: [bscNetworkSettings]
-          })
-      } catch (e) {
-        alert(`Cannot connect to BSC network: ${e.message}`);
-        return;
-      }
+    const settings = networkSettings[chainId];
+    if (!settings) {
+      console.error(`Chain ID ${chainId} is not supported`);
+      return;
+    }
+    try {
+      await web3.eth.currentProvider
+        .request({
+          method: 'wallet_addEthereumChain',
+          params: [settings]
+        })
+    } catch (e) {
+      alert(`Cannot connect to BSC network: ${e.message}`);
+      return;
     }
 
     document.querySelector("#connect-btn").style.display = "none";
@@ -209,11 +247,12 @@ function onReady() {
     }
 
     function getQuery(chainId, address) {
-      return "https://api.bscscan.com/api?module=account&action=txlist&address=" + address;
+      const apiAddress = chainId === 250 ? 'ftmscan.com' : 'bscscan.com';
+      return `https://api.${apiAddress}/api?module=account&action=txlist&address=${address}`;
     }
 
     function getExplorerPage(chainId) {
-      return "https://bscscan.com/address/";
+      return `${settings.blockExplorerUrls[0]}address/`;
     }
 
     function getApproveTransactions(query, cb) {

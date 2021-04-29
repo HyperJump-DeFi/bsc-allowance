@@ -49,7 +49,7 @@ body {
   margin-bottom: 5%;
 }
 
-header h1, header h2 {
+header h1, header h2, header p {
   font-family: Roboto, sans-serif;
   color: #44c3e3;
 }
