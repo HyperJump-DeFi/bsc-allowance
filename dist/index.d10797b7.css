@@ -1,0 +1,227 @@
+/* -- General -- */
+html,
+body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  left: 0;
+  top: 0;
+  font-size: 100%;
+  background-image: url('bg.c5253229.jpg');
+  overflow-x: hidden;
+}
+@media only screen and (max-width:  768px) { html { font-size: 12px; } }
+@media only screen and (min-width:  769px) { html { font-size: 13px; } }
+@media only screen and (min-width: 1024px) { html { font-size: 14px; } }
+@media only screen and (min-width: 1200px) { html { font-size: 15px; } }
+@media only screen and (min-width: 1400px) { html { font-size: 16px; } }
+* {
+  font-family: 'Roboto', sans-serif;
+  color: #000;
+  text-rendering: optimizeLegibility;
+}
+.unselectable {
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.container {
+  position: relative;
+  width: 60rem;
+  max-width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  z-index: 100;
+}
+.content {
+  padding: 20px;
+  align-items: center;
+  border-radius: 20px;
+  background-color: rgba(0, 0, 0, 0.49);
+  margin-top: 15%;
+  margin-bottom: 5%;
+}
+header h1, header h2, header p {
+  font-family: Roboto, sans-serif;
+  color: #44c3e3;
+}
+header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 0 0 2rem 0;
+}
+.header-right {
+  display: flex;
+  align-items: flex-end;
+  flex-direction: column;
+  justify-content: space-between;
+}
+h1 {
+  font-size: 2rem;
+  font-weight: 700;
+}
+h2 {
+  font-size: 1.2rem;
+}
+@media only screen and (max-width: 768px) {
+  .container {
+    max-width: 94%;
+  }
+  .content {
+    padding: 0 1rem;
+  }
+  .grid-container.grid-header div:first-child {
+    width: 40%;
+  }
+  .header-right {
+    justify-content: space-evenly;
+  }
+
+  .grid-container .grid-symbol {
+    width: 15%;
+  }
+  #results .grid-address {
+    width: 30%;
+  }
+  #results .grid-address:first-child {
+    width: 45%;
+  }
+  #results .grid-action {
+    width: 25%;
+  }
+  #results .grid-action button {
+    padding: .5rem .5rem;
+  }
+  header h1 {
+    font-size: 2.5rem;
+  }
+}
+@media only screen and (max-width: 399px) {
+  header h1 {
+    font-size: 2rem;
+  }
+  header .header-left {
+    padding-right: 1rem;
+  }
+  #results .grid-address:first-child {
+    width: 38%;
+  }
+  #results .grid-action {
+    width: 35%;
+  }
+}
+/* -- Results -- */
+.grid-container {
+  display: flex;
+  padding: 1rem 0;
+  justify-content: space-between;
+}
+.grid-container.grid-header {
+  position: sticky;
+  top: 10rem;
+  font-weight: 700;
+  color: #fff;
+  font-size: 1.2rem;
+  margin-left: -10px;
+  margin-right: -10px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.grid-container.grid-header .grid-address {
+  padding-top: 0 !important;
+}
+.grid-container.grid-header div:first-child {
+  width: 43%;
+}
+.grid-address {
+  width: 25%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-top: .6rem;
+  color: #fff;
+}
+.grid-header {
+  background-color: rgba(0, 0, 0, 0.75);
+  border-radius: 10px;
+}
+.grid-symbol {
+  padding-top: .6rem;
+  width: 10%;
+  white-space: nowrap;
+}
+.grid-symbol span {
+  color: #fff;
+}
+.grid-address a {
+  text-decoration: none;
+  color: #fff;
+}
+.grid-address a:hover {
+  text-decoration: underline;
+}
+.grid-action {
+  width: 35%;
+  display: flex;
+  justify-content: space-between;
+  color: #fff;
+}
+.grid-action span {
+  text-transform: capitalize;
+  font-weight: 700;
+  padding-top: .6rem;
+}
+.grid-action span.limited {
+  color: #fff;
+}
+.grid-action span.unlimited {
+  color: #BF0D0D;
+}
+.grid-action button,
+.revoke-btn {
+  padding: .5rem 1.5rem;
+  border: 1px solid;
+  border-radius: 2rem;
+  font-weight: 700;
+  text-decoration: none !important;
+  cursor: pointer;
+  border-color: #44c3e3;
+}
+.grid-action button.limited {
+  background-color: #44c3e3;
+  color: #000;
+}
+.grid-action button.unlimited,
+.revoke-btn {
+  background-color: #44c3e3;
+  color: #fff;
+}
+.grid-action button:hover,
+.revoke-btn:hover {
+  border-color: rgb(193, 39, 45);
+  background-color: rgb(193, 39, 45);
+  color: #fff;
+}
+@media only screen and (min-width: 769px) {
+  .grid-address {
+    width: 30%;
+  }
+
+  .grid-action {
+    width: 20%;
+  }
+}
+#WEB3_CONNECT_MODAL_ID > * {
+  z-index: 100;
+}
+#disconnect-btn {
+  display: none;
+}
+.red {
+  border-color: rgb(193, 39, 45);
+  background-color: rgb(193, 39, 45);
+}
+
+/*# sourceMappingURL=index.d10797b7.css.map */
