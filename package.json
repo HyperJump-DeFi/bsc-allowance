@@ -8,7 +8,7 @@
   },
   "scripts": {
     "start": "parcel --no-source-maps src/index.html",
-    "build": "parcel build src/index.html --public-url /"
+    "build": "parcel build src/index.html --public-url /",
     "build:gh-pages": "parcel build src/index.html --public-url /bsc-allowance/dist/ && cp dist/index.html ."
   }
 }

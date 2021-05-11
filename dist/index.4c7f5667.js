@@ -508,6 +508,7 @@ function initialise() {
   })();
 }
 async function onReady() {
+  const web3 = window.web3;
   const chainId = await web3.eth.getChainId();
   let settings = _networkSettingsDefault.default[chainId];
   if (!settings) {
@@ -530,7 +531,10 @@ async function onReady() {
   }).catch(err => {
     console.log(err);
     // some web3 objects don't have requestAccounts
-    ethereum.enable().then(accounts => {
+    if (!window.ethereum) {
+      return;
+    }
+    window.ethereum.enable().then(accounts => {
       init(accounts[0]);
       document.querySelector("#disconnect-btn").style.display = "block";
     }).catch(err => {
@@ -660,7 +664,6 @@ async function disconnect() {
   }
   provider = null;
   window.web3.currentProvider = null;
-  selectedAccount = null;
 }
 $(initialise);
 
