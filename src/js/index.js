@@ -1,96 +1,8 @@
-let Web3 = require('web3');
-let request = require('superagent');
-
-const ERC20_ABI = [
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "name",
-    "outputs": [
-      {
-        "name": "",
-        "type": "string"
-      }
-    ],
-    "payable": false,
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "decimals",
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint8"
-      }
-    ],
-    "payable": false,
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "_owner",
-        "type": "address"
-      }
-    ],
-    "name": "balanceOf",
-    "outputs": [
-      {
-        "name": "balance",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "symbol",
-    "outputs": [
-      {
-        "name": "",
-        "type": "string"
-      }
-    ],
-    "payable": false,
-    "type": "function"
-  }
-];
+import { ERC20_ABI, approvalABI } from './abi';
+import networkSettings from './networkSettings';
 
 const approvalHash = "0x095ea7b3";
 const unlimitedAllowance = "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
-const approvalABI = [
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "spender",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "tokens",
-        "type": "uint256"
-      }
-    ],
-    "name": "approve",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "success",
-        "type": "bool"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  }
-];
 
 // -- Web3Modal
 const Web3Modal = window.Web3Modal.default;
@@ -98,53 +10,6 @@ const WalletConnectProvider = window.WalletConnectProvider.default;
 
 let web3Modal;
 let provider;
-
-const networkSettings = {
-  1: {
-    chainId: '0x38',
-    chainName: 'BSC Mainnet',
-    nativeCurrency: {
-      name: 'Binance Coin',
-      symbol: 'BNB',
-      decimals: 18,
-    },
-    rpcUrls: ['https://bsc-dataseed.binance.org'],
-    blockExplorerUrls: ['https://bscscan.com/'],
-  },
-  56: {
-    chainId: '0x38',
-    chainName: 'BSC Mainnet',
-    nativeCurrency: {
-      name: 'Binance Coin',
-      symbol: 'BNB',
-      decimals: 18,
-    },
-    rpcUrls: ['https://bsc-dataseed.binance.org'],
-    blockExplorerUrls: ['https://bscscan.com/']
-  },
-  97: {
-    chainId: '0x38',
-    chainName: 'BSC Mainnet',
-    nativeCurrency: {
-      name: 'Binance Coin',
-      symbol: 'BNB',
-      decimals: 18,
-    },
-    rpcUrls: ['https://bsc-dataseed.binance.org'],
-    blockExplorerUrls: ['https://bscscan.com/']
-  },
-  250: {
-    chainId: '0xFA',
-    chainName: 'FANTOM Mainnet',
-    nativeCurrency: {
-      name: 'Fantom',
-      symbol: 'FTM',
-      decimals: 18,
-    },
-    rpcUrls: ['https://rpcapi.fantom.network'],
-    blockExplorerUrls: ['https://ftmscan.com/']
-  }
-};
 
 const providerOptions = {
   walletconnect: {
@@ -154,6 +19,7 @@ const providerOptions = {
         1: 'https://bsc-dataseed.binance.org/',
         56: 'https://bsc-dataseed.binance.org/',
         97: 'https://data-seed-prebsc-1-s1.binance.org:8545/',
+        250: 'https://rpcapi.fantom.network'
       },
     },
   },
@@ -182,7 +48,7 @@ const inject = async () => {
   }
 
   return false;
-}
+};
 
 async function onChainChange(chainId) {
   $("#results").children().not(':first').remove();
@@ -218,7 +84,7 @@ async function onReady() {
       .request({
         method: 'wallet_addEthereumChain',
         params: [settings]
-      })
+      });
   } catch (e) {
     alert(`Cannot connect to network: ${e.message}`);
     return;
@@ -270,45 +136,45 @@ async function onReady() {
   }
 
   function getApproveTransactions(query, cb) {
-    request.get(query, (err, data) => {
-      if(err) { throw err; }
+    fetch(query)
+      .then(data => data.text())
+      .then(text => {
+        let approveTransactions = [];
+        let dataObj = JSON.parse(text).result;
 
-      let approveTransactions = [];
-      let dataObj = JSON.parse(data.text).result;
+        for(let tx of dataObj) {
 
-      for(let tx of dataObj) {
+          if(tx.input && tx.input.includes(approvalHash)) {
+            let approveObj = {};
+            approveObj.contract = web3.utils.toChecksumAddress(tx.to);
+            approveObj.approved = web3.utils.toChecksumAddress("0x" + tx.input.substring(34, 74));
 
-        if(tx.input && tx.input.includes(approvalHash)) {
-          let approveObj = {};
-          approveObj.contract = web3.utils.toChecksumAddress(tx.to);
-          approveObj.approved = web3.utils.toChecksumAddress("0x" + tx.input.substring(34, 74));
-
-          const contract = new web3.eth.Contract(ERC20_ABI, approveObj.contract);
-          contract.methods.symbol().call().then(symbol => {
-            $("#results").find(`#${approveObj.contract} .grid-symbol`).html(`<span>${symbol}</span>`);
-          });
-
-          let allowance = tx.input.substring(74);
-          if(allowance.includes(unlimitedAllowance)) {
-            approveObj.allowance = "unlimited";
-          } else {
-            approveObj.allowance = "limited";
-          }
-
-          if(parseInt(allowance, 16) !== 0) {
-            approveTransactions.push(approveObj);
-          } else {
-            // TODO clean up
-            // Remove all previous additions of this approval transaction as it is now cleared up
-            approveTransactions = approveTransactions.filter((val) => {
-              return !(val.approved === approveObj.approved && val.contract === val.contract);
+            const contract = new web3.eth.Contract(ERC20_ABI, approveObj.contract);
+            contract.methods.symbol().call().then(symbol => {
+              $("#results").find(`#${approveObj.contract} .grid-symbol`).html(`<span>${symbol}</span>`);
             });
-          }
 
+            let allowance = tx.input.substring(74);
+            if(allowance.includes(unlimitedAllowance)) {
+              approveObj.allowance = "unlimited";
+            } else {
+              approveObj.allowance = "limited";
+            }
+
+            if(parseInt(allowance, 16) !== 0) {
+              approveTransactions.push(approveObj);
+            } else {
+              // TODO clean up
+              // Remove all previous additions of this approval transaction as it is now cleared up
+              approveTransactions = approveTransactions.filter((val) => {
+                return !(val.approved === approveObj.approved && val.contract === val.contract);
+              });
+            }
+
+          }
         }
-      }
-      cb(approveTransactions);
-    });
+        cb(approveTransactions);
+      });
   }
 
   function buildResults(chainId, txs, account) {
@@ -377,7 +243,7 @@ async function disconnect() {
     return;
   }
 
-  if(foundProvider.close) {
+  if (foundProvider.close) {
     console.log("Killing the wallet connection", foundProvider);
     await foundProvider.close();
 
