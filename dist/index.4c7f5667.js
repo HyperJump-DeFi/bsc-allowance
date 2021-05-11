@@ -508,26 +508,22 @@ function initialise() {
   })();
 }
 async function onReady() {
-  const web3 = window.web3;
-  const chainId = await web3.eth.getChainId();
-  let settings = _networkSettingsDefault.default[chainId];
-  if (!settings) {
-    alert(`Error: chain ID ${chainId} is not supported`);
-    return;
-  }
+  let settings;
   try {
-    await web3.eth.currentProvider.request({
-      method: 'wallet_addEthereumChain',
-      params: [settings]
-    });
+    const chainId = await window.web3.eth.getChainId();
+    settings = _networkSettingsDefault.default[chainId];
+    if (!settings) {
+      alert(`Error: chain ID ${chainId} is not supported`);
+      return;
+    }
   } catch (e) {
     alert(`Cannot connect to network: ${e.message}`);
     return;
   }
   document.querySelector("#connect-btn").style.display = "none";
-  web3.eth.requestAccounts().then(accounts => {
+  document.querySelector("#disconnect-btn").style.display = "block";
+  window.web3.eth.requestAccounts().then(accounts => {
     init(accounts[0]);
-    document.querySelector("#disconnect-btn").style.display = "block";
   }).catch(err => {
     console.log(err);
     // some web3 objects don't have requestAccounts
@@ -536,15 +532,12 @@ async function onReady() {
     }
     window.ethereum.enable().then(accounts => {
       init(accounts[0]);
-      document.querySelector("#disconnect-btn").style.display = "block";
     }).catch(err => {
       alert(e + err);
     });
   });
   function init(account) {
-    web3.eth.getChainId().then(chainId => {
-      return chainId;
-    }).then(chainId => {
+    window.web3.eth.getChainId().then(chainId => {
       let query = getQuery(chainId, account);
       if (query === "") {
         alert(`No allowances found in chain(${chainId}) for ${account}`);
@@ -616,7 +609,7 @@ async function onReady() {
   }
   function setRevokeButtonClick(tx, id, account) {
     $(id).click(() => {
-      let contract = new web3.eth.Contract(_abi.approvalABI, tx.contract);
+      let contract = new window.web3.eth.Contract(_abi.approvalABI, tx.contract);
       contract.methods.approve(tx.approved, 0).send({
         from: account
       }).then(receipt => {

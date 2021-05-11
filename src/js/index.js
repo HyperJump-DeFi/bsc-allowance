@@ -73,28 +73,23 @@ function initialise() {
 }
 
 async function onReady() {
-  const web3 = window.web3;
-  const chainId = await web3.eth.getChainId();
-  let settings = networkSettings[chainId];
-  if (!settings) {
-    alert(`Error: chain ID ${chainId} is not supported`);
-    return;
-  }
+  let settings;
   try {
-    await web3.eth.currentProvider
-      .request({
-        method: 'wallet_addEthereumChain',
-        params: [settings]
-      });
+    const chainId = await window.web3.eth.getChainId();
+    settings = networkSettings[chainId];
+    if (!settings) {
+      alert(`Error: chain ID ${chainId} is not supported`);
+      return;
+    }
   } catch (e) {
     alert(`Cannot connect to network: ${e.message}`);
     return;
   }
 
   document.querySelector("#connect-btn").style.display = "none";
-  web3.eth.requestAccounts().then((accounts) => {
+  document.querySelector("#disconnect-btn").style.display = "block";
+  window.web3.eth.requestAccounts().then((accounts) => {
     init(accounts[0]);
-    document.querySelector("#disconnect-btn").style.display = "block";
   }).catch((err) => {
     console.log(err);
     // some web3 objects don't have requestAccounts
@@ -103,31 +98,29 @@ async function onReady() {
     }
     window.ethereum.enable().then((accounts) => {
       init(accounts[0]);
-      document.querySelector("#disconnect-btn").style.display = "block";
     }).catch((err) => {
       alert(e + err);
     });
   });
 
   function init(account) {
-    web3.eth.getChainId().then((chainId) => {
-      return chainId;
+    window.web3.eth
+      .getChainId()
+      .then((chainId) => {
+        let query = getQuery(chainId, account);
+        if(query === "") {
+          alert(`No allowances found in chain(${chainId}) for ${account}`);
 
-    }).then((chainId) => {
-      let query = getQuery(chainId, account);
-      if(query === "") {
-        alert(`No allowances found in chain(${chainId}) for ${account}`);
-
-      } else {
-        getApproveTransactions(query, (txs) => {
-          // display the logic
-          // console.log(txs);
-          buildResults(chainId, txs, account);
-        });
-      }
-    }).catch((err) => {
-      throw err;
-    });
+        } else {
+          getApproveTransactions(query, (txs) => {
+            // display the logic
+            // console.log(txs);
+            buildResults(chainId, txs, account);
+          });
+        }
+      }).catch((err) => {
+        throw err;
+      });
   }
 
   function getQuery(chainId, address) {
@@ -146,9 +139,9 @@ async function onReady() {
         let approveTransactions = [];
         let dataObj = JSON.parse(text).result;
 
-        for(let tx of dataObj) {
+        for (let tx of dataObj) {
 
-          if(tx.input && tx.input.includes(approvalHash)) {
+          if (tx.input && tx.input.includes(approvalHash)) {
             let approveObj = {};
             approveObj.contract = web3.utils.toChecksumAddress(tx.to);
             approveObj.approved = web3.utils.toChecksumAddress("0x" + tx.input.substring(34, 74));
@@ -159,13 +152,13 @@ async function onReady() {
             });
 
             let allowance = tx.input.substring(74);
-            if(allowance.includes(unlimitedAllowance)) {
+            if (allowance.includes(unlimitedAllowance)) {
               approveObj.allowance = "unlimited";
             } else {
               approveObj.allowance = "limited";
             }
 
-            if(parseInt(allowance, 16) !== 0) {
+            if (parseInt(allowance, 16) !== 0) {
               approveTransactions.push(approveObj);
             } else {
               // TODO clean up
@@ -184,7 +177,7 @@ async function onReady() {
   function buildResults(chainId, txs, account) {
     let explorerURL = getExplorerPage(chainId);
     let parentElement = $('#results');
-    for(let index in txs) {
+    for (let index in txs) {
       parentElement.append(`
         <div class="grid-container" id="${txs[index].contract}">
         <div class="grid-symbol"></div>
@@ -199,7 +192,7 @@ async function onReady() {
 
   function setRevokeButtonClick(tx, id, account) {
     $(id).click(() => {
-      let contract = new web3.eth.Contract(approvalABI, tx.contract);
+      let contract = new window.web3.eth.Contract(approvalABI, tx.contract);
       contract.methods.approve(tx.approved, 0).send({ from: account }).then((receipt) => {
         console.log("revoked: " + JSON.stringify(receipt));
         $(id).parents('.grid-container').remove();
