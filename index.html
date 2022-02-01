@@ -1,72 +1,175 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <title>Hyperjump UnRekt</title>
-    <meta charset="utf-8">
-    <meta name="description" content="Find & revoke all the addresses that can spend your tokens">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8" />
+    <meta
+      name="description"
+      content="Find & revoke all the addresses that can spend your tokens"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/webflow-stripped.css">
-    <link rel="stylesheet" href="css/hyperjumpbsc.webflow.css">
-    <link rel="stylesheet" href="https://use.typekit.net/avo8ruz.css" media='nope!' onload='this.media="all"'>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/webflow-stripped.css" />
+    <link rel="stylesheet" href="css/hyperjumpbsc.webflow.css" />
+    <link
+      rel="stylesheet"
+      href="https://use.typekit.net/avo8ruz.css"
+      media="nope!"
+      onload='this.media="all"'
+    />
 
-    <meta property='og:local' content='en_US'>
-    <meta property='og:title' content='HyperJump UnRekt'>
-    <meta property='og:description' content='Find & revoke all the addresses that can spend your tokens'>
-    <meta property='og:type' content='website'>
-    <meta property='og:url' content='https://allowance.hyperjump.fi'>
-    <meta property='og:image' content='img/logo.png'>
+    <meta property="og:local" content="en_US" />
+    <meta property="og:title" content="HyperJump UnRekt" />
+    <meta
+      property="og:description"
+      content="Find & revoke all the addresses that can spend your tokens"
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://allowance.hyperjump.fi" />
+    <meta property="og:image" content="img/logo.png" />
 
-    <meta link rel="apple-touch-icon" href="img/logo.png">
-    <link rel="shortcut icon" type="image/jpg" href="favicon.ico"/>
+    <meta link rel="apple-touch-icon" href="img/logo.png" />
+    <link rel="shortcut icon" type="image/jpg" href="favicon.ico" />
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs=" crossorigin="anonymous"></script>
+    <script
+      src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+      integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs="
+      crossorigin="anonymous"
+    ></script>
   </head>
 
   <body class="body">
-    <div data-collapse="all" data-animation="over-left" data-duration="400" role="banner" class="navbar-3 w-nav">
+    <div
+      data-collapse="all"
+      data-animation="over-left"
+      data-duration="400"
+      role="banner"
+      class="navbar-3 w-nav"
+    >
       <div class="splash"></div>
       <div class="container-5 w-container">
         <nav role="navigation" class="nav-menu-2 w-nav-menu">
-          <a href="https://hyperjump.fi" class="div-block-4 top w-inline-block"><img src="img/icons/home.svg" loading="lazy" alt="" class="image-7">
+          <a href="https://hyperjump.fi" class="div-block-4 top w-inline-block"
+            ><img
+              src="img/icons/home.svg"
+              loading="lazy"
+              alt=""
+              class="image-7"
+            />
             <div class="nav-link">Home</div>
           </a>
-          <a href="https://swap.hyperjump.fi" class="div-block-4 w-inline-block"><img src="img/icons/refresh-cw.svg" loading="lazy" alt="" class="image-7">
+          <a href="https://swap.hyperjump.fi" class="div-block-4 w-inline-block"
+            ><img
+              src="img/icons/refresh-cw.svg"
+              loading="lazy"
+              alt=""
+              class="image-7"
+            />
             <div class="nav-link">Trade</div>
           </a>
-          <a href="https://farm.hyperjump.fi" class="div-block-4 w-inline-block"><img src="img/icons/asteroid_field.svg" loading="lazy" alt="" class="image-7">
+          <a href="https://farm.hyperjump.fi" class="div-block-4 w-inline-block"
+            ><img
+              src="img/icons/asteroid_field.svg"
+              loading="lazy"
+              alt=""
+              class="image-7"
+            />
             <div class="nav-link">Asteroid Field</div>
           </a>
-          <a href="https://farm.hyperjump.fi/pools" class="div-block-4 w-inline-block"><img src="img/icons/mech.svg" loading="lazy" alt="" class="image-7">
+          <a
+            href="https://farm.hyperjump.fi/pools"
+            class="div-block-4 w-inline-block"
+            ><img
+              src="img/icons/mech.svg"
+              loading="lazy"
+              alt=""
+              class="image-7"
+            />
             <div class="nav-link">Mech Staking</div>
           </a>
-          <a href="https://vaults.hyperjump.fi/" class="div-block-4
-            w-inline-block"><img src="img/icons/vaults.svg" loading="lazy" alt="" class="image-7">
+          <a
+            href="https://vaults.hyperjump.fi/"
+            class="div-block-4 w-inline-block"
+            ><img
+              src="img/icons/vaults.svg"
+              loading="lazy"
+              alt=""
+              class="image-7"
+            />
             <div class="nav-link">Star Vaults</div>
           </a>
-          <a href="https://info.hyperjump.fi" class="div-block-4 w-inline-block"><img src="img/icons/info.svg" loading="lazy" alt="" class="image-7">
+          <a href="https://info.hyperjump.fi" class="div-block-4 w-inline-block"
+            ><img
+              src="img/icons/info.svg"
+              loading="lazy"
+              alt=""
+              class="image-7"
+            />
             <div class="nav-link">Analytics</div>
           </a>
           <div class="drop-down-button">
             <div data-hover="" data-delay="0" class="w-dropdown">
               <div class="dropdown-toggle w-dropdown-toggle">
-                <div class="icon-3 w-icon-dropdown-toggle"></div><img src="img/icons/telegram-hyper.svg" loading="lazy" alt="" class="dropdown_icon">
+                <div class="icon-3 w-icon-dropdown-toggle"></div>
+                <img
+                  src="img/icons/telegram-hyper.svg"
+                  loading="lazy"
+                  alt=""
+                  class="dropdown_icon"
+                />
                 <div class="nav-link">Telegram</div>
               </div>
               <nav class="w-dropdown-list">
-                <a href="https://t.me/hyperjumpbsc" class="nav-link dropdown w-dropdown-link">English</a>
-                <a href="https://t.me/hyperjump_ID" class="nav-link dropdown w-dropdown-link">Indonesia</a>
-                <a href="https://t.me/hyperjumpPH" class="nav-link dropdown w-dropdown-link">Philippines</a>
-                <a href="https://t.me/hyperjumpsrilanka" class="dropdown nav-link w-dropdown-link">Sri Lanka</a>
-                <a href="https://t.me/hyperjumpesp" target="_blank" class="nav-link dropdown w-dropdown-link">Spanish</a>
+                <a
+                  href="https://t.me/hyperjumpbsc"
+                  class="nav-link dropdown w-dropdown-link"
+                  >English</a
+                >
+                <a
+                  href="https://t.me/hyperjump_ID"
+                  class="nav-link dropdown w-dropdown-link"
+                  >Indonesia</a
+                >
+                <a
+                  href="https://t.me/hyperjumpPH"
+                  class="nav-link dropdown w-dropdown-link"
+                  >Philippines</a
+                >
+                <a
+                  href="https://t.me/hyperjumpsrilanka"
+                  class="dropdown nav-link w-dropdown-link"
+                  >Sri Lanka</a
+                >
+                <a
+                  href="https://t.me/hyperjumpesp"
+                  target="_blank"
+                  class="nav-link dropdown w-dropdown-link"
+                  >Spanish</a
+                >
               </nav>
             </div>
           </div>
-          <a href="https://twitter.com/HyperJumpBSC" class="div-block-4 w-inline-block"><img src="img/icons/twitter-hyper.svg" loading="lazy" alt="" class="image-7">
+          <a
+            href="https://twitter.com/HyperJumpBSC"
+            class="div-block-4 w-inline-block"
+            ><img
+              src="img/icons/twitter-hyper.svg"
+              loading="lazy"
+              alt=""
+              class="image-7"
+            />
             <div class="nav-link">Twitter</div>
           </a>
-          <a href="https://discord.gg/PDHCV6rWru" class="div-block-4 w-inline-block"><img src="img/icons/discord-hyper.svg" loading="lazy" alt="" class="image-7">
+          <a
+            href="https://discord.gg/PDHCV6rWru"
+            class="div-block-4 w-inline-block"
+            ><img
+              src="img/icons/discord-hyper.svg"
+              loading="lazy"
+              alt=""
+              class="image-7"
+            />
             <div class="nav-link">Discord</div>
           </a>
         </nav>
@@ -80,15 +183,22 @@
         <div class="header-left">
           <h1>UnRekt</h1>
           <h2>Find & revoke all the addresses that can spend your tokens!</h2>
-          <p>UnRekt supports Binance Smart Chain and Fantom networks.<p>
+          <p>UnRekt supports Binance Smart Chain and Fantom networks.</p>
+          <p></p>
         </div>
+
         <div class="header-right">
           <div class="align-top">
-            <button class="revoke-btn red" id="disconnect-btn">Disconnect</button>
+            <button class="revoke-btn red" id="disconnect-btn">
+              Disconnect
+            </button>
             <button class="revoke-btn" id="connect-btn">Connect</button>
           </div>
           <div class="align-bottom">
-            <button class="revoke-btn revoke-10-btn">Batch Revoke Top 10</button>
+            <button class="revoke-btn revoke-10-btn">
+              Batch Revoke Top 10
+            </button>
+            <button class="revoke-btn revoke-all-btn">Batch Revoke All</button>
           </div>
         </div>
       </header>
@@ -101,9 +211,18 @@
       </div>
     </div>
 
-    <script type="text/javascript" src="https://unpkg.com/web3@1.2.11/dist/web3.min.js"></script>
-    <script type="text/javascript" src="https://unpkg.com/web3modal@1.9.0/dist/index.js"></script>
-    <script type="text/javascript" src="https://unpkg.com/@walletconnect/web3-provider@1.2.1/dist/umd/index.min.js"></script>
+    <script
+      type="text/javascript"
+      src="https://unpkg.com/web3@1.2.11/dist/web3.min.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://unpkg.com/web3modal@1.9.0/dist/index.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://unpkg.com/@walletconnect/web3-provider@1.2.1/dist/umd/index.min.js"
+    ></script>
 
     <script src="js/bundle.js" type="text/javascript"></script>
     <script src="js/webflow.js" type="text/javascript"></script>

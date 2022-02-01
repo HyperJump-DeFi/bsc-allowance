@@ -102,14 +102,14 @@ let provider;
   const networkSettings = {
     1: {
       chainId: '0x38',
-      chainName: 'BSC Mainnet',
+      chainName: 'ETH Mainnet',
       nativeCurrency: {
-        name: 'Binance Coin',
-        symbol: 'BNB',
+        name: 'ETHEREUM',
+        symbol: 'ETH',
         decimals: 18,
       },
-      rpcUrls: ['https://bsc-dataseed.binance.org'],
-      blockExplorerUrls: ['https://bscscan.com/'],
+      rpcUrls: ['https://cloudflare-eth.com/'],
+      blockExplorerUrls: ['https://etherscan.com/'],
     },
     56: {
       chainId: '0x38',
@@ -124,14 +124,14 @@ let provider;
     },
     97: {
       chainId: '0x38',
-      chainName: 'BSC Mainnet',
+      chainName: 'BSC Testnet',
       nativeCurrency: {
         name: 'Binance Coin',
         symbol: 'BNB',
         decimals: 18,
       },
-      rpcUrls: ['https://bsc-dataseed.binance.org'],
-      blockExplorerUrls: ['https://bscscan.com/']
+      rpcUrls: ['https://data-seed-prebsc-2-s1.binance.org:8545'],
+      blockExplorerUrls: ['https://testnet.bscscan.com/']
     },
     250: {
       chainId: '0xFA',
@@ -151,9 +151,10 @@ const providerOptions = {
     package: WalletConnectProvider,
     options: {
       rpc: {
-        1: 'https://bsc-dataseed.binance.org/',
-        56: 'https://bsc-dataseed.binance.org/',
-        97: 'https://data-seed-prebsc-1-s1.binance.org:8545/',
+        1: "https://cloudflare-eth.com/",
+        56: "https://bsc-dataseed.binance.org/",
+        97: "https://data-seed-prebsc-1-s1.binance.org:8545",
+        250: "https://rpc.ftm.tools",
       },
     },
   },
