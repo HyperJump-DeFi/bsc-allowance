@@ -331,8 +331,7 @@
             var apiAddress =
               chainId === 250 ? "api.ftmscan.com" : "api.bscscan.com";
             if (chainId === 1088) apiAddress = "andromeda-explorer.metis.io";
-
-            return `https://api.${apiAddress}/api?module=account&action=txlist&address=${address}`;
+            return `https://${apiAddress}/api?module=account&action=txlist&address=${address}`;
           }
 
           function getExplorerPage(chainId) {
@@ -47829,7 +47828,7 @@ function unoddify(value: BytesLike | Hexable | number): BytesLike | Hexable | nu
               } else if (kind === 2) {
                 mapped.push(transitional ? value : ch);
               } else if (kind === 3) {
-              /* istanbul ignore next */
+                /* istanbul ignore next */
                 mapped.push(ch);
               }
             }
