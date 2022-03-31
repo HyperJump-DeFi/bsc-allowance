@@ -102,14 +102,14 @@ let provider;
   const networkSettings = {
     1: {
       chainId: '0x38',
-      chainName: 'ETH Mainnet',
+      chainName: 'BSC Mainnet',
       nativeCurrency: {
-        name: 'ETHEREUM',
-        symbol: 'ETH',
+        name: 'Binance Coin',
+        symbol: 'BNB',
         decimals: 18,
       },
-      rpcUrls: ['https://cloudflare-eth.com/'],
-      blockExplorerUrls: ['https://etherscan.com/'],
+      rpcUrls: ['https://bsc-dataseed.binance.org'],
+      blockExplorerUrls: ['https://bscscan.com/'],
     },
     56: {
       chainId: '0x38',
@@ -124,14 +124,14 @@ let provider;
     },
     97: {
       chainId: '0x38',
-      chainName: 'BSC Testnet',
+      chainName: 'BSC Mainnet',
       nativeCurrency: {
         name: 'Binance Coin',
         symbol: 'BNB',
         decimals: 18,
       },
-      rpcUrls: ['https://data-seed-prebsc-2-s1.binance.org:8545'],
-      blockExplorerUrls: ['https://testnet.bscscan.com/']
+      rpcUrls: ['https://bsc-dataseed.binance.org'],
+      blockExplorerUrls: ['https://bscscan.com/']
     },
     250: {
       chainId: '0xFA',
@@ -143,6 +143,17 @@ let provider;
       },
       rpcUrls: ['https://rpcapi.fantom.network'],
       blockExplorerUrls: ['https://ftmscan.com/']
+    },
+    1088: {
+      chainId: '0x440',
+      chainName: 'Metis Andromeda',
+      nativeCurrency: {
+        name: 'Metis',
+        symbol: 'METIS',
+        decimals: 18,
+      },
+      rpcUrls: ['https://andromeda.metis.io/?owner=1088'],
+      blockExplorerUrls: ['https://andromeda-explorer.metis.io']
     }
   };
 
@@ -262,8 +273,9 @@ async function onReady() {
     }
 
     function getQuery(chainId, address) {
-      const apiAddress = chainId === 250 ? 'ftmscan.com' : 'bscscan.com';
-      return `https://api.${apiAddress}/api?module=account&action=txlist&address=${address}`;
+      var apiAddress = chainId === 250 ? 'api.ftmscan.com' : 'api.bscscan.com';
+      if (chainId === 1088) apiAddress = 'andromeda-explorer.metis.io';
+      return `https://${apiAddress}/api?module=account&action=txlist&address=${address}`;
     }
 
     function getExplorerPage(chainId) {
