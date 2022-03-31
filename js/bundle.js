@@ -143,6 +143,17 @@ let provider;
       },
       rpcUrls: ['https://rpcapi.fantom.network'],
       blockExplorerUrls: ['https://ftmscan.com/']
+    },
+    1088: {
+      chainId: '0x440',
+      chainName: 'Metis Andromeda',
+      nativeCurrency: {
+        name: 'Metis',
+        symbol: 'METIS',
+        decimals: 18,
+      },
+      rpcUrls: ['https://andromeda.metis.io/?owner=1088'],
+      blockExplorerUrls: ['https://andromeda-explorer.metis.io']
     }
   };
 
@@ -155,6 +166,7 @@ const providerOptions = {
         56: "https://bsc-dataseed.binance.org/",
         97: "https://data-seed-prebsc-1-s1.binance.org:8545",
         250: "https://rpc.ftm.tools",
+        1008: "https://andromeda.metis.io/?owner=1088",
       },
     },
   },
@@ -262,8 +274,11 @@ async function onReady() {
     }
 
     function getQuery(chainId, address) {
-      const apiAddress = chainId === 250 ? 'ftmscan.com' : 'bscscan.com';
-      return `https://api.${apiAddress}/api?module=account&action=txlist&address=${address}`;
+       var apiAddress = chainId === 250 ? 'api.ftmscan.com' : 'api.bscscan.com';
+       if (chainId === 1088) apiAddress = 'andromeda-explorer.metis.io';
+       
+       return `https://${apiAddress}/api?module=account&action=txlist&address=${address}`;
+    }
     }
 
     function getExplorerPage(chainId) {
